@@ -394,22 +394,59 @@ Inside the **Employee_Retrieve** microflow:
 ## Updating Snowflake Data from Within Mendix
 
 Duration: 15 minutes
-Now, we will extend our module to be able to edit the existing data in Snowflake.
+In this section, we will extend the module so users can **edit existing employee data stored in Snowflake directly from Mendix**.
 
-1. Go to the display page. Above the attribute columns in the a white area, right-click and choose *Add button->Action*
+### 1. Add an Edit Button to the Data Grid
+
+1. Navigate to the **Table_Display** page.
+2. In the data grid header area (the white area above the columns), right-click and choose:  
+   **Add button → Action**
+
 ![Add Button](assets/datagrid_add_button.png)
-2. Double-click on this new button and change the caption to "Edit". Change the **On-click** event to *Show a page*. Click on **New**, change the name of the new page to be "Employee_Edit", go to section **Forms** and select **Form Vertical**.
+
+3. Double-click the newly added button:
+- **Caption:** `Edit`
+- **On-click:** `Show a page`
+
+4. Click **New** to create a page:
+- **Name:** `Employee_Edit`
+- **Category:** Forms
+- **Template:** Form Vertical
+
 ![Edit Button](assets/datagrid_edit_button.png)
-3. Open the new page and delete the text box for "Employee_ID". This is a unique ID that will be given to employees and should never be edited.
-4. Next, delete the text box for "Date_Of_Birth". This is a long value that is retrived from Snowflake which is then converted to Date and time. We will use the "Date_Of_Birth_Parsed" and convert it to the correct format in the microflow that will be triggered.
-5. Navigate to the *Properties* of the page and in the *Navigation* section for *Visible for* select *User* to give the user access to the page and solve the security error.
-6. We need to now configure the microflow that will enable us to update the information in the Snowflake table.
 
-- Duplicate the **EXAMPLE_ExecuteStatement** microflow into your module and rename it to something like *Employee_Update*
-- Add a **Parameter** above the microflow from the **Toolbox**. **Name** is *Employee* and as the **Data type** keep *Object*. Click on **Select** and choose *Employee* as the entity.
-- The first component in the microflow is the *Create Statement* action. Let's edit this to be relevant to our needs.
+1. Open the **Employee_Edit** page.
+2. Delete the input field for **Employee_ID**  
+   - This is a unique identifier and should never be edited.
+3. Delete the input field for **Date_Of_Birth**  
+   - This value is retrieved as a long value from Snowflake.
+   - We will instead use **Date_Of_Birth_Parsed**, which is already converted to Mendix DateTime.
+4. Open the **Page Properties**:
+   - Under **Navigation → Visible for**, select the **User** role to resolve security errors.
 
-```sql
+### 3. Create the Microflow to Update Snowflake Data
+
+We now create a microflow that updates the Snowflake table when changes are saved.
+
+#### 3.1 Create the Update Microflow
+
+1. Duplicate the microflow **EXAMPLE_ExecuteStatement**.
+2. Rename it to:  
+   **Employee_Update**
+
+#### 3.2 Add a Parameter
+
+1. From the **Toolbox**, add a **Parameter** at the top of the microflow:
+   - **Name:** `Employee`
+   - **Data type:** Object
+   - **Entity:** `Employee`
+
+### 4. Configure the SQL Update Statement
+
+1. Open the **Create Statement** action.
+2. Update the configuration as follows:
+
+```text
   - SQLStatement: 
   'UPDATE EMPLOYEE_INFO SET 
     NAME = ''' + $Employee/Name+ ''', 
@@ -423,16 +460,44 @@ Now, we will extend our module to be able to edit the existing data in Snowflake
   - Role: *Snowflake role with sufficient rights to execute statement*
 ```
 
-- The second component is the *Retrieve ConnectionDetails* action. We will also need to configure this to retrieve the authentication method we created on Step 2
-  - XPath Constraint: [Name='*name_of_your_connection*']
-- The third and fourth components are to retrieve the authentication token and execute the statement in Snowflake and can stay as they are.
-- The rest of the components can be deleted.
-    ![ACT_Employee_Update](assets/Employee_Update.png)
+### 5. Configure the Remaining Actions
 
-7. Open the "Employee_Edit" page and double-click on the **Save** button. Change the **On-click** event to *Call a microflow* and create a new microflow called *ACT_Employee_Update* so that this microflow will be triggered whenever the information is changed and the **Save** button is clicked.
-8. Drag *Employee_Update* into *ACT_Employee_Update* from the app explorer and after that drag the *Employee_Retrieve* microflow in there as well. Call the return value of the *Employee_Retrieve* microflow call to *Table*. Add a **Show page** action at the end of the *ACT_Employee_Update* microflow and make it call the *Table_Display* page.
-   ![ACT_Employee_Update](assets/ACT_Employee_Update.png)
-9. Run the application and test the functionalities of these buttons to update information in your Snowflake environment.
+- **Retrieve ConnectionDetails**
+  - Configure this action to retrieve the authentication method created in **Step 2**.
+  - **XPath Constraint:**  
+    `[Name='*name_of_your_connection*']`
+
+- The **Retrieve Authentication Token** and **Execute Statement** actions can remain unchanged.
+
+- All remaining actions from the duplicated example microflow can be deleted.
+
+![Employee_Update](assets/Employee_Update.png)
+
+### 6. Connect the Edit Page to the Update Logic
+
+1. Open the **Employee_Edit** page.
+2. Double-click the **Save** button:
+   - Set **On-click** to **Call a microflow**.
+   - Click **New** and name the microflow **ACT_Employee_Update**.
+
+### 7. Configure ACT_Employee_Update
+
+1. Open the **ACT_Employee_Update** microflow.
+2. Drag the **Employee_Update** microflow into it.
+3. Drag the **Employee_Retrieve** microflow into the same flow:
+   - Set the return value to a variable named **Table**.
+4. Add a **Show page** action at the end of the microflow:
+   - **Page:** `Table_Display`
+
+### 8. Test the Update Flow
+
+1. Run the application.
+2. Click **Retrieve and Show Employee Info**.
+3. Click **Edit** on any employee record.
+4. Modify the employee details and click **Save**.
+5. Verify that:
+   - The data is successfully updated in Snowflake.
+   - The **Table_Display** page refreshes and shows the updated information.
 
 ![Edit Employee Info](assets/table_display.png)
 
