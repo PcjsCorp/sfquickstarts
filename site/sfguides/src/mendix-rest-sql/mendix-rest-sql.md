@@ -58,7 +58,8 @@ Before you begin, make sure you have the following:
 
 - A Mendix account. You can sign up [here](https://signup.mendix.com/).
 - Mendix Studio Pro version [9.24.2](https://marketplace.mendix.com/link/studiopro/9.24.2) or later.  
-  For the purposes of this QuickStart, we recommend using Mendix Studio Pro version 9.24.2.
+  - **Windows users:** For the purposes of this QuickStart, we recommend using Mendix Studio Pro version 9.24.2.
+  - **macOS users:** Mendix Studio Pro 9.24.2 is not supported; download the latest Mendix Studio Pro version for macOS from [here](https://marketplace.mendix.com/link/studiopro).
 - A [Snowflake](https://www.snowflake.com/) account with permissions to execute SQL statements
 
 ### Support Resources
@@ -321,7 +322,7 @@ Inside the **Employee_Retrieve** microflow:
 - Role: <Snowflake role with sufficient privileges, for example 'ACCOUNTADMIN'>
 ```
 
-- Do not use ACCOUNTADMIN for routine application access. Assign only the minimal privileges required to your application role.
+> Do not use ACCOUNTADMIN for routine application access or production environments. Assign only the minimal privileges required to your application role.
 
 - The second component is the **Retrieve ConnectionDetails** action. Configure this action to retrieve the authentication method created in Step 2.
   - XPath Constraint: [Name='*name_of_your_connection*']
