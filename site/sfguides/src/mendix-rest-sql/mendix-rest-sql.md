@@ -506,47 +506,62 @@ We now create a microflow that updates the Snowflake table when changes are save
 <!-- ------------------------ -->
 ## (Optional) Deploy the Mendix Application
 
-Duration: 10
+Duration: 10 minutes
 
-[Mendix Cloud](https://docs.mendix.com/developerportal/deploy/mendix-cloud-deploy/) is the default [deployment](https://docs.mendix.com/developerportal/deploy/mendix-cloud-deploy/deploying-an-app/) option for Mendix applications. It is a public cloud service for Mendix applications, with infrastructure built and maintained by Mendix and built on top of Amazon Web Services (AWS). The application you created can be be deployed on a free cloud sandbox environment to gain access to it from different browsers on the web and mobile. However, as the application and data on the application will be shared to the public, we always recommend security first be set up on the application before a deployment is done. You can implement security on the application yourself by using the [*Security*](https://docs.mendix.com/refguide/security/) Mendix documentation or you can install a security set up version here. (TODO: ADD FILE TO DOWNLOAD!!)
+[Mendix Cloud](https://docs.mendix.com/developerportal/deploy/mendix-cloud-deploy/) is the default [deployment](https://docs.mendix.com/developerportal/deploy/mendix-cloud-deploy/deploying-an-app/) option for Mendix applications. It is a public cloud service for Mendix applications, built on Amazon Web Services (AWS).  
 
-1. (Optional) Download the mpk file that includes the previous implemented steps as well as security. (TODO ADD FILE)
-2. (Optional) Once downloaded, execute the file titled `SnowflakeRESTSQL-QuickStart.mpk`, a window prompt should appear
-3. (Optional) Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro version 9.24
-4. Inside Mendix Studio Pro, navigate to `Version Control`, then click `Upload to Version Control Server...` and confirm by clicking `OK`. A window titled Upload App to Team Server should appear
-5. After the project has been uploaded to version control server, click `Publish`
-6. After a while a Snackbar notification is displayed `Your application is published`
-7. Click `View App` to see the login screen for your Mendix application
+You can deploy the application you created on a **free cloud sandbox environment**, allowing access from any browser or mobile device. Keep in mind that application and data are shared publicly, so ensure **security** is set up before deployment. Security can be configured following the [Mendix Security documentation](https://docs.mendix.com/refguide/security/) or by using a pre-configured secured version. *(TODO: Add file to download)*
 
-- (Optional) To log into your Mendix application
-  - Use the username `demo_administrator`
-  - To retrieve the password for this user inside Mendix Studio Pro, navigate to `App 'SFShowcase'` -> `Security` -> `Demo users` -> `demo_administrator` and then click the link that reads `Copy password to clipboard`
+### Steps to Deploy
 
-8. Save the endpoint of your Mendix application, you'll need it later
+1. (Optional) Download the `.mpk` file that includes previous steps with security configured. *(TODO: Add file)*
+2. Execute the file `SnowflakeRESTSQL-QuickStart.mpk`. A window prompt will appear.
+3. Create a new folder to unpack the project files. After unpacking, the project should appear in **Mendix Studio Pro 9.24**.
+4. In Mendix Studio Pro, navigate to **Version Control → Upload to Version Control Server...** and confirm by clicking **OK**.
+5. Once uploaded, click **Publish**.
+6. A Snackbar notification will appear: `Your application is published`.
+7. Click **View App** to see the login screen.
 
-- Save `https://snowflakerestsql-QuickStart-sandbox.mxapps.io/` if your endpoint is `https://snowflakerestsql-QuickStart-sandbox.mxapps.io/login.html?profile=Responsive` 
-- You have successfully deployed the Snowflake Showcase App onto a free cloud sandbox environment!
+### Logging Into Your Application
+
+- Username: `demo_administrator`
+- Password: Retrieve it from **Mendix Studio Pro**:  
+  `App 'SFShowcase' → Security → Demo users → demo_administrator → Copy password to clipboard`
+
+8. Save the endpoint of your Mendix application for later use:
+
+- Example: `https://snowflakerestsql-QuickStart-sandbox.mxapps.io/`  
+- If your endpoint includes `/login.html?profile=Responsive`, just save the base URL:  
+  `https://snowflakerestsql-QuickStart-sandbox.mxapps.io/`  
+
+**Congratulations!** You have successfully deployed the Snowflake Showcase App to a free cloud sandbox environment.
 
 ![Deploying your Mendix application](assets/publish.png)
-9. Add your authentication method in the homepage after logging in.
-10. Go back to Mendix Studio Pro and configure your Snowflake information in *Employee_Retrieve* and *Employee_Update*. 
-  
-![Configure Microflows](assets/configure_snowflake_info.png)
-11. Click on publish again to deploy the application with the lates changes.
 
-You can now use the microflows to retrieve and update Snowflake data from within Mendix.
+### Configure Snowflake in the Application
+
+9. Add your **authentication method** on the homepage after logging in.
+10. Open **Mendix Studio Pro** and configure your Snowflake information in the microflows:  
+    - *Employee_Retrieve*  
+    - *Employee_Update*
+
+![Configure Microflows](assets/configure_snowflake_info.png)
+
+11. Click **Publish** again to deploy the application with the latest changes.
+
+You can now use the microflows to **retrieve and update Snowflake data from within Mendix**.
 
 <!-- ------------------------ -->
 ## Conclusion and Resources
 
-Congratulations! You've successfully used the Snowflake REST SQL Connector and executed SQL statements in Snowflake from within a Mendix application.
+Congratulations! You’ve successfully used the **Snowflake REST SQL Connector** to execute SQL statements in Snowflake from within a Mendix application.
 
 If you’d like to learn more about Mendix please check out our [Rapid Developer Course](https://academy.mendix.com/link/paths/31/Become-a-Rapid-Developer) or explore other [learning paths](https://academy.mendix.com/link/home).
 
 ### What You Learned
 
-- How to quickly configure the Snowflake REST SQL Connector in a Mendix application.
-- How to execute SQL statements in Snowflake from within a Mendix application.
+- How to configure the **Snowflake REST SQL Connector** in Mendix.
+- How to execute SQL statements in Snowflake from a Mendix application.
 
 ### Related Resources
 
