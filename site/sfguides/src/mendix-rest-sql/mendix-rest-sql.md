@@ -45,110 +45,150 @@ Cortex-specific examples are out of scope for this QuickStart and will be covere
 
 ### What You’ll Accomplish
 
-- To establish a connection between a Mendix application and a Snowflake database
-- To execute single SQL statements in Snowflake from a Mendix application   
-- To read data from a Snowflake environment and present it within a Mendix application
-- To update Snowflake data within a Mendix application 
+In this QuickStart, you will:
+
+- Establish a secure connection between a Mendix application and a Snowflake environment
+- Execute single SQL statements in Snowflake from a Mendix application
+- Read data from Snowflake and display it within a Mendix application
+- Update data in Snowflake from a Mendix application
 
 ### Prerequisites
 
-- A Mendix account, sign up [here](https://signup.mendix.com/).
-- Mendix Studio Pro [9.24.2](https://marketplace.mendix.com/link/studiopro/9.24.2) or later (Note that for the purposes of this QuickStart we recommend to use Mendix Studio Pro version 9.24.2).
-- A [Snowflake](https://www.snowflake.com/) account
+Before you begin, make sure you have the following:
+
+- A Mendix account. You can sign up [here](https://signup.mendix.com/).
+- Mendix Studio Pro version [9.24.2](https://marketplace.mendix.com/link/studiopro/9.24.2) or later.  
+  For the purposes of this QuickStart, we recommend using Mendix Studio Pro version 9.24.2.
+- A [Snowflake](https://www.snowflake.com/) account with permissions to execute SQL statements
 
 ### Support Resources
 
-- If you are new to Mendix it is advised to first do the [Rapid developer learning paths](https://academy.mendix.com/link/paths)
-- Throughout this QuickStart we have included .mpk files that can be opened using Mendix studio pro version 9.25.2 and up. They are Mendix projects that have all steps implemented up to the point where the download link is provided.
+If you are new to Mendix, it is recommended to first complete the [Rapid Developer learning paths](https://academy.mendix.com/link/paths) available on the Mendix Academy.
 
-To import the .mpk files do the following:
+Throughout this QuickStart, downloadable `.mpk` files are provided. These are Mendix application packages that contain all steps implemented up to the point where the download link is shown. The `.mpk` files can be opened using Mendix Studio Pro version 9.25.2 or later.
 
-1. Download the .mpk via the provided download links in this QuickStart
+To import an `.mpk` file:
+
+1. Download the `.mpk` file using the provided links in this QuickStart
 2. Open Mendix Studio Pro
-3. Click the "Import App Package" button and assign a folder where the project should reside
+3. Click **Import App Package** and select a folder where the project should be stored
 
 ### What You’ll Build
 
-- A basic Mendix application with method to communicate with Snowflake
+By completing this QuickStart, you will build:
+
+- A basic Mendix application that communicates with Snowflake using the Snowflake REST SQL Connector
 
 <!-- ------------------------ -->
 
 ## Setting Up Your Snowflake Environment
 
-Duration: 5
+Duration: 5 minutes
 
-In the next steps, we will cover how to read, update and display Snowflake data in a Mendix application. To see the possibilities of Mendix and Snowflake together, start by creating a database, schema, table and insert some data into these tables.
+In the following steps, you will prepare a Snowflake environment that will be used throughout this QuickStart. You will create a database, schema, and table, and populate the table with sample data that can be read, updated, and displayed in a Mendix application.
 
-Run the following lines in a Snowflake worksheet to set up a database, schema and table: 
+This setup allows you to explore how Mendix and Snowflake work together by executing SQL statements through the Snowflake REST SQL Connector.
+
+Run the following SQL statements in a Snowflake worksheet to create the required database objects and insert sample data:
 
 ```sql
 CREATE OR REPLACE DATABASE DATABASE_QuickStart;
+
 CREATE OR REPLACE SCHEMA DATABASE_QuickStart.SCHEMA_QuickStart;
-CREATE OR REPLACE TABLE DATABASE_QuickStart.SCHEMA_QuickStart.EMPLOYEE_INFO(
+
+CREATE OR REPLACE TABLE DATABASE_QuickStart.SCHEMA_QuickStart.EMPLOYEE_INFO (
   EMPLOYEE_ID INTEGER,
   NAME VARCHAR,
   SURNAME VARCHAR,
   DATE_OF_BIRTH TIMESTAMP_NTZ, 
   IS_ACTIVE_EMPLOYEE BOOLEAN
 );
-INSERT INTO DATABASE_QuickStart.SCHEMA_QuickStart.EMPLOYEE_INFO(EMPLOYEE_ID, NAME, SURNAME, DATE_OF_BIRTH, IS_ACTIVE_EMPLOYEE) VALUES
-(1, 'John', 'Doe', to_timestamp_ntz('1985-06-15'), true),
-(2, 'Jane', 'Smith', to_timestamp_ntz('1990-02-25'), true),
-(3, 'Michael', 'Johnson', to_timestamp_ntz('1978-11-30'), false),
-(4, 'Emily', 'Davis', to_timestamp_ntz('1982-04-10'), true),
-(5, 'Robert', 'Miller', to_timestamp_ntz('1965-08-20'), false),
-(6, 'Jessica', 'Wilson', to_timestamp_ntz('1995-01-15'), true),
-(7, 'David', 'Moore', to_timestamp_ntz('1988-09-05'), true),
-(8, 'Sarah', 'Taylor', to_timestamp_ntz('1975-12-20'), false),
-(9, 'Chris', 'Anderson', to_timestamp_ntz('1992-07-30'), true),
-(10, 'Laura', 'Thomas', to_timestamp_ntz('1980-03-10'), false);
+
+INSERT INTO DATABASE_QuickStart.SCHEMA_QuickStart.EMPLOYEE_INFO
+  (EMPLOYEE_ID, NAME, SURNAME, DATE_OF_BIRTH, IS_ACTIVE_EMPLOYEE)
+VALUES
+  (1, 'John', 'Doe', to_timestamp_ntz('1985-06-15'), true),
+  (2, 'Jane', 'Smith', to_timestamp_ntz('1990-02-25'), true),
+  (3, 'Michael', 'Johnson', to_timestamp_ntz('1978-11-30'), false),
+  (4, 'Emily', 'Davis', to_timestamp_ntz('1982-04-10'), true),
+  (5, 'Robert', 'Miller', to_timestamp_ntz('1965-08-20'), false),
+  (6, 'Jessica', 'Wilson', to_timestamp_ntz('1995-01-15'), true),
+  (7, 'David', 'Moore', to_timestamp_ntz('1988-09-05'), true),
+  (8, 'Sarah', 'Taylor', to_timestamp_ntz('1975-12-20'), false),
+  (9, 'Chris', 'Anderson', to_timestamp_ntz('1992-07-30'), true),
+  (10, 'Laura', 'Thomas', to_timestamp_ntz('1980-03-10'), false);
 ```
+
+After executing these statements, your Snowflake environment will contain a sample `EMPLOYEE_INFO` table that will be used in subsequent steps of this QuickStart.
 
 ## Setting Up Your Mendix Environment
 
-Duration: 10
+Duration: 10 minutes
 
-Mendix has a descriptive QuickStart about [Building a Responsive Web App](https://docs.mendix.com/QuickStarts/responsive-web-app/). We recommend going through the Mendix QuickStart or to keep the QuickStart open on the side to search for any unfamiliar terms that might come up in the instructions below.
+Mendix provides a detailed QuickStart on [Building a Responsive Web App](https://docs.mendix.com/QuickStarts/responsive-web-app/). If you are new to Mendix, we recommend completing that QuickStart or keeping it open alongside this guide to look up any unfamiliar concepts referenced in the steps below.
 
-1. If you are a Windows user download the installer for Mendix Studio Pro 9.24.2 [here]((https://marketplace.mendix.com/link/studiopro/9.24.2)) and install it to your system. If you are a MacOS user download the latest version of Mendix Studio Pro [here](https://marketplace.mendix.com/link/studiopro). Please note that you will need a [Mendix account](https://signup.mendix.com/) to use Mendix.
-2. Open it and create a new app. Choose "Blank Web App" as the starting point.
-3. Download the latest Snowflake REST SQL Connector into your application from the Mendix Marketplace.
+1. Install Mendix Studio Pro:
+   - **Windows users**: Download and install Mendix Studio Pro version 9.24.2 from [here](https://marketplace.mendix.com/link/studiopro/9.24.2).
+   - **macOS users**: Download the latest version of Mendix Studio Pro from [here](https://marketplace.mendix.com/link/studiopro).
+
+   You will need a [Mendix account](https://signup.mendix.com/) to use Mendix Studio Pro.
+
+2. Open Mendix Studio Pro and create a new application. Select **Blank Web App** as the starting point.
+
+3. Download the latest **Snowflake REST SQL Connector** from the Mendix Marketplace into your application.
 
 ![Mendix Marketplace](assets/mendix_marketplace.png)
 
-When the download is completed, some errors will occur because dependency modules of the Snowflake REST SQL Connector also need to be downloaded into the application. All these downloads will be done inside Mendix Studio Pro and do not require any external installation.
-4. Download the latest [GenAI Commons](https://marketplace.mendix.com/link/component/227933), [Encryption](https://marketplace.mendix.com/link/component/1011) and [Community Commons](https://marketplace.mendix.com/link/component/170) modules into your application from the Mendix Marketplace. To be able to use the functionalities of the Encryption module, the **EncryptionKey** and **EncryptionPrefix** constants must be set, for more detailed information please take a look [here](https://docs.mendix.com/appstore/modules/encryption/#configuration).
+After the download completes, some errors may appear because dependency modules of the Snowflake REST SQL Connector also need to be installed. These dependencies can be downloaded directly within Mendix Studio Pro and do not require any external installations.
 
-If you are not using Mendix Studio Pro 9,24,2 you might get some errors that need to be solved before you can continue due to migration of the downloaded AppStore modules. Navigate to the **Errors** panel and resolve the errors (most likely by right clicking on them and updating widgets).
+4. Download the following additional modules from the Mendix Marketplace:
 
-In order to use the capabilities of Snowflake in a Mendix app with the Snowflake REST SQL connector, an authentication method must be set up. For example purposes, we will set up a key-pair authentication method.
-5. Configure [key-pair authentication in Snowflake](https://docs.snowflake.com/en/user-guide/key-pair-auth)
-     - Generate a private key
-     - Generate a public key
-     - Assign the public key to a Snowflake user
+- [GenAI Commons](https://marketplace.mendix.com/link/component/227933)
+- [Encryption](https://marketplace.mendix.com/link/component/1011)
+- [Community Commons](https://marketplace.mendix.com/link/component/170)
+
+To use the functionality provided by the Encryption module, you must configure the **EncryptionKey** and **EncryptionPrefix** constants. For more information, see the [Encryption module documentation](https://docs.mendix.com/appstore/modules/encryption/#configuration).
+
+If you are not using Mendix Studio Pro version 9.24.2, you may encounter errors caused by App Store module migrations. Navigate to the **Errors** panel in Mendix Studio Pro and resolve the errors before continuing. In most cases, this can be done by right-clicking the error and selecting **Update widget**.
+
+To use Snowflake capabilities in a Mendix application with the Snowflake REST SQL Connector, an authentication method must be configured. For demonstration purposes, this QuickStart uses **key-pair authentication**.
+
+5. Configure key-pair authentication in Snowflake by following the Snowflake documentation:
+
+- Generate a private key
+- Generate a public key
+- Assign the public key to a Snowflake user  
+
+   See the [Snowflake key-pair authentication documentation](https://docs.snowflake.com/en/user-guide/key-pair-auth) for detailed instructions.
   
-To make it easier for users to configure the key-pair authentication in a Mendix application, the Snowflake REST SQL connector includes pages and microflows that you can simply drag and drop into your own modules.
-6. Set up key-pair authentication in Mendix. If you need any help with with how to create pages or on how to configure security you can have have a look at the [rapid developer learning paths](https://academy.mendix.com/link/paths) provided by Mendix for free!
-     - Right click on the **MyFirstModule** module and click the add page button to add a new blank page. Call it **Configuration_Page** and navigate to **Navigation** in the app explorer and add the page to your navigation.
-     - Solve the resulting error by navigating to the **configuration_Page** you have created and in the page properties under the Navigation section select Visible for **User** and click OK.
-     - In the **App Explorer**, under the **SnowflakeRESTSQL** section, find the **SNIPPET_SnowflakeConfiguration** snippet and drag and drop it into the page you have just created.
-     - If security has been enabled in the application, to be able to use the functionality in this snippet, give your user role access by assigning the module role **SnowflakeRESTSQL.Administrator** to the application roles that will be used to set up the configuration.
-     - Run the application and then *View App*.
-  
-   We have included a few .mpk files where previous steps have been implemented which you can use as a reference or when you get stuck along the way. The certificate you need to connect to Snowflake environment isn't included for obvious reasons and connection details will have to be configured in any of these .mpk files.
+To simplify the configuration process in Mendix, the Snowflake REST SQL Connector provides ready-to-use pages and microflows that can be added to your application.
 
-   [Download first .mpk](assets/REST_SQL_QuickStart.mpk "download")
-     - ![Run Mendix Application](assets/run_application.png)
-     - Go to the page where you added the snippet
-     - Click **New**
-     - On the **Connection details** page, fill out all fields with the details of your Snowflake account
-       - `Name`: An identifier of the connection inside the Mendix app. This property is not passed to Snowflake.
-       - `AccountURL`: The unique account URL of the Snowflake account within your organization to connect to the [Snowflake API](https://sdc-prd.snowflakecomputing.com)
-       - `ResourcePath`: The path to a resource in Snowflake API, for example, `/api/v2/statements`
-       - `AccountIdentifier`: The unique account identifier that identifies a Snowflake account within your organization 
-       - `Username`: The username with which you sign in to your Snowflake account.
-     - Enter the passphrase and upload your private key file in *.p8* format
-     - Click **Save** to save the connection, or click **Save and test connection** to generate a JSON Web Token (JWT) and validate your connection.
+6. Set up key-pair authentication in Mendix:
+
+- In the **App Explorer**, right-click the **MyFirstModule** module and select **Add page**.
+- Create a new **Blank Page** and name it **Configuration_Page**.
+- Open **Navigation** in the App Explorer and add the page to the navigation structure.
+- Resolve the resulting error by opening the **Configuration_Page**, navigating to the page properties, and under **Navigation**, set **Visible for** to **User**, then click **OK**.
+- In the **App Explorer**, under the **SnowflakeRESTSQL** module, locate the **SNIPPET_SnowflakeConfiguration** snippet and drag it onto the **Configuration_Page**.
+- If application security is enabled, assign the module role **SnowflakeRESTSQL.Administrator** to the application roles that will configure the Snowflake connection.
+
+Run the application and select **View App**.
+
+Several `.mpk` files are provided with earlier steps already implemented. These can be used as reference material or to continue if you encounter issues. For security reasons, the private key required to connect to Snowflake is not included and must be configured manually in each `.mpk` file.
+
+[Download first .mpk](assets/REST_SQL_QuickStart.mpk "download")
+
+- ![Run Mendix Application](assets/run_application.png)
+- Navigate to the page where you added the configuration snippet
+- Click **New**
+- On the **Connection details** page, complete all fields with your Snowflake account information:
+  - `Name`: Identifier for the connection within the Mendix application. This value is not sent to Snowflake.
+  - `AccountURL`: The Snowflake account URL used to connect to the Snowflake API (for example, `https://sdc-prd.snowflakecomputing.com`)
+  - `ResourcePath`: The Snowflake API resource path, for example `/api/v2/statements`
+  - `AccountIdentifier`: The unique identifier of your Snowflake account
+  - `Username`: The Snowflake username used for authentication
+- Enter the passphrase and upload your private key file in `.p8` format
+- Click **Save** to store the connection, or **Save and test connection** to generate a JSON Web Token (JWT) and validate the connection
 
 ![Connection Details](assets/connection_details.png)
 
