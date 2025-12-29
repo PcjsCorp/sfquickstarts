@@ -65,7 +65,7 @@ Before you begin, make sure you have the following:
 
 If you are new to Mendix, it is recommended to first complete the [Rapid Developer learning paths](https://academy.mendix.com/link/paths) available on the Mendix Academy.
 
-Throughout this QuickStart, downloadable `.mpk` files are provided. These are Mendix application packages that contain all steps implemented up to the point where the download link is shown. The `.mpk` files can be opened using Mendix Studio Pro version 9.25.2 or later.
+Throughout this QuickStart, downloadable `.mpk` files are provided. These are Mendix application packages that contain all steps implemented up to the point where the download link is shown. The `.mpk` files can be opened using Mendix Studio Pro version 9.24.2 or later.
 
 To import an `.mpk` file:
 
@@ -129,7 +129,7 @@ Mendix provides a detailed QuickStart on [Building a Responsive Web App](https:/
 
 1. Install Mendix Studio Pro:
    - **Windows users**: Download and install Mendix Studio Pro version 9.24.2 from [here](https://marketplace.mendix.com/link/studiopro/9.24.2).
-   - **macOS users**: Download the latest version of Mendix Studio Pro from [here](https://marketplace.mendix.com/link/studiopro).
+   - **macOS users:** 9.24.2 is not supported; download the latest Mendix Studio Pro version for macOS from [here](https://marketplace.mendix.com/link/studiopro).
 
    You will need a [Mendix account](https://signup.mendix.com/) to use Mendix Studio Pro.
 
@@ -301,6 +301,7 @@ Employee
 ### 2. Configure the microflow to retrieve data
 
 ![Table-Employee Association](assets/table_employee_association.png)
+
 4. Configure the microflows required to retrieve data from Snowflake and prepare it for display:
 
 - Duplicate the **EXAMPLE_ExecuteStatement** microflow into your module and rename it to **Employee_Retrieve**.
@@ -319,6 +320,8 @@ Inside the **Employee_Retrieve** microflow:
 - Warehouse: <Desired warehouse>
 - Role: <Snowflake role with sufficient privileges, for example 'ACCOUNTADMIN'>
 ```
+
+- Do not use ACCOUNTADMIN for routine application access. Assign only the minimal privileges required to your application role.
 
 - The second component is the **Retrieve ConnectionDetails** action. Configure this action to retrieve the authentication method created in Step 2.
   - XPath Constraint: [Name='*name_of_your_connection*']
@@ -347,6 +350,7 @@ Inside the **Employee_Retrieve** microflow:
 - Set the `$NewTable` variable as the return value of the microflow by right-clicking the **Create Table** action and selecting **Set $NewTable as return value**.
   
 ![Retrieve Employee Info](assets/Employee_Retrieve.png)
+
 5. As the microflow is now almost complete, prepare the user interface to display the data.
 
 - Create a new **Blank Page** named **Table_Display**.
@@ -460,6 +464,12 @@ We now create a microflow that updates the Snowflake table when changes are save
   - Role: *Snowflake role with sufficient rights to execute statement*
 ```
 
+#### Using Parameter Binding in Snowflake Queries
+
+>In real-life projects, you should **never construct SQL statements by concatenating user input**, as this exposes your application to SQL injection. Instead, use **parameter binding** with the Snowflake REST SQL Connector.
+>
+>For more details, see the official Mendix documentation: [Binding Variables in Snowflake](https://docs.mendix.com/appstore/connectors/snowflake/snowflake-rest-sql/#binding-variables-in-snowflake-using-the-snowflake-rest-sql-connector).
+
 ### 5. Configure the Remaining Actions
 
 - **Retrieve ConnectionDetails**
@@ -510,11 +520,11 @@ Duration: 10 minutes
 
 [Mendix Cloud](https://docs.mendix.com/developerportal/deploy/mendix-cloud-deploy/) is the default [deployment](https://docs.mendix.com/developerportal/deploy/mendix-cloud-deploy/deploying-an-app/) option for Mendix applications. It is a public cloud service for Mendix applications, built on Amazon Web Services (AWS).  
 
-You can deploy the application you created on a **free cloud sandbox environment**, allowing access from any browser or mobile device. Keep in mind that application and data are shared publicly, so ensure **security** is set up before deployment. Security can be configured following the [Mendix Security documentation](https://docs.mendix.com/refguide/security/) or by using a pre-configured secured version. *(TODO: Add file to download)*
+You can deploy the application you created on a **free cloud sandbox environment**, allowing access from any browser or mobile device. Keep in mind that application and data are shared publicly, so ensure **security** is set up before deployment. Security can be configured following the [Mendix Security documentation](https://docs.mendix.com/refguide/security/) or by using a pre-configured secured version.
 
 ### Steps to Deploy
 
-1. (Optional) Download the `.mpk` file that includes previous steps with security configured. *(TODO: Add file)*
+1. (Optional) [Download the `.mpk` file that includes previous steps with security configured.](assets/REST_SQL_QuickStart_3.mpk "download")
 2. Execute the file `SnowflakeRESTSQL-QuickStart.mpk`. A window prompt will appear.
 3. Create a new folder to unpack the project files. After unpacking, the project should appear in **Mendix Studio Pro 9.24**.
 4. In Mendix Studio Pro, navigate to **Version Control → Upload to Version Control Server...** and confirm by clicking **OK**.
