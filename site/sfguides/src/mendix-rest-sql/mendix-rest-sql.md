@@ -1,6 +1,6 @@
 author: Ayca Öner
 id: mendix_rest_sql_connector
-summary: Guide on how to use the Mendix REST SQL Connector to use data from Snowflake in your Mendix application and enrich your app with the capabilities that Snowflake provides via REST calls.
+summary: Guide on how to use the Mendix REST SQL Connector to integrate Snowflake data into a Mendix application using REST-based SQL execution.
 categories: connectors, partner-integrations
 environments: web
 status: Published
@@ -10,21 +10,28 @@ tags: Getting Started, Data Science, Data Engineering, Connectors, Native Apps, 
 <!-- ------------------------ -->
 ## Overview
 
-Duration: 5
+Duration: 5 minutes
 
-In this QuickStart, we will guide you through the process of setting up a secure connection, retrieving data stored in Snowflake and seamlessly integrating it into a Mendix application.
+In this QuickStart, you will learn how to set up a secure connection to Snowflake, retrieve data, and integrate it into a Mendix application using the Snowflake REST SQL Connector.
 
-[Mendix](https://www.mendix.com/snowflake/) is a low code application development platform that will allow you to quickly and easily develop enterprise applications. Compared to [Snowflake native apps](https://docs.snowflake.com/en/developer-guide/native-apps/native-apps-about) built with [Streamlit](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit), Mendix allows for more custom user interfaces and multi-experiences for all forms of interaction like websites and mobile applications. Mendix applications typically support full workflows for business applications and support multiple deployment options, including public cloud, private cloud, on-premises and on-edge deployment.
+This QuickStart assumes basic familiarity with Mendix Studio Pro, microflows, and SQL, as well as access to a Snowflake account.
 
-Streamlit is tailored for developers and data analysts, requiring Python expertise to create dashboards. In contrast, Mendix focuses more on business applications, enabling users to build mobile-ready apps and responsive websites without any coding. Additionally, the Mendix Marketplace offers a wide range of ready-to-use frontend widgets and connectors.
+[Mendix](https://www.mendix.com/snowflake/) is a low-code application development platform that enables the rapid creation of enterprise-grade applications. Compared to [Snowflake Native Apps](https://docs.snowflake.com/en/developer-guide/native-apps/native-apps-about) built with [Streamlit](https://docs.snowflake.com/en/developer-guide/streamlit/about-streamlit), Mendix focuses on building full-featured business applications with highly customizable user interfaces and support for multiple interaction channels, such as web and mobile applications.
+
+Streamlit is primarily aimed at developers and data analysts and requires Python expertise to build dashboards and data applications. Mendix, by contrast, enables teams to build mobile-ready and responsive web applications without writing code, while still supporting complex workflows, role-based access, and multiple deployment options including public cloud, private cloud, on-premises, and edge deployments. In addition, the Mendix Marketplace provides a wide range of ready-to-use widgets and connectors.
 
 ![Mendix Snowflake Connectors](assets/mendix_snowflake_connectors.png)
 
-This QuickStart will equip you with the knowledge and tools needed to achieve seamless data integration between Mendix and Snowflake. Within Mendix two Snowflake connectors are provided, the [External Database Connector](https://marketplace.mendix.com/link/component/219862) and the [Snowflake REST SQL Connector](https://marketplace.mendix.com/link/component/225717) connecting Mendix to Snowflake. Conversely, Mendix has developed the Mendix Data Loader, connecting a Snowflake environment to a Mendix application. To learn more about the Mendix Data Loader, see [Mendix Data Loader QuickStart](https://QuickStarts.snowflake.com/guide/mendix_data_loader/index.html#0).
+Mendix provides two connectors for integrating with Snowflake:
 
-This QuickStart will focus on the Snowflake REST SQL Connector.
+- The [External Database Connector](https://marketplace.mendix.com/link/component/219862)
+- The [Snowflake REST SQL Connector](https://marketplace.mendix.com/link/component/225717)
 
-The Snowflake REST SQL connector provides a way to set up key-pair authentication with an RSA key pair according to the PKCS #8 standard or with OAuth, and then execute SQL statements on Snowflake via a REST call from within your Mendix application. These statements allow you to perform the following tasks:
+In addition, Mendix offers the Mendix Data Loader, which enables data ingestion from Mendix into Snowflake. For more information, see the [Mendix Data Loader QuickStart](https://QuickStarts.snowflake.com/guide/mendix_data_loader/index.html#0).
+
+This QuickStart focuses specifically on the Snowflake REST SQL Connector.
+
+The Snowflake REST SQL Connector allows you to authenticate using either key-pair authentication with an RSA key pair (PKCS #8 standard) or OAuth, and to execute SQL statements on Snowflake via REST calls from within a Mendix application. Using this connector, you can:
 
 - Read data from Snowflake
 - Write data to Snowflake
@@ -32,7 +39,9 @@ The Snowflake REST SQL connector provides a way to set up key-pair authenticatio
 - Use Snowflake Cortex LLM functions
 - Use Snowflake Cortex Analyst
 
-For Snowflake Cortex related functionalities, the account used must be in a region where Snowflake Cortex and Arctic are available, consult the [Snowflake documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/llm-functions#label-cortex-llm-availability) for more information. We will deal with Cortex AI specific examples in a future QuickStart but you can take a look at the documentation [here](https://docs.mendix.com/appstore/connectors/snowflake/snowflake-rest-sql/#cortex-analyst).
+For Snowflake Cortex–related functionality, the Snowflake account must be located in a region where Snowflake Cortex and Arctic are available. For details, see the [Snowflake documentation](https://docs.snowflake.com/en/user-guide/snowflake-cortex/llm-functions#label-cortex-llm-availability).
+
+Cortex-specific examples are out of scope for this QuickStart and will be covered in a future guide. For more information, refer to the Mendix documentation [here](https://docs.mendix.com/appstore/connectors/snowflake/snowflake-rest-sql/#cortex-analyst).
 
 ### What You’ll Accomplish
 
