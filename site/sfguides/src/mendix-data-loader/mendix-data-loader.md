@@ -65,8 +65,10 @@ With Mendix, data engineers can focus on what truly matters—maximizing the pow
 
 Follow the steps below to deploy a sample Mendix application that will be used later in this Quickstart.
 
-- Download the latest Snowflake Showcase App for Mendix Studio Pro version 10.12 from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845)
-- Once downloaded, execute the file titled `SFShowcase.mpk`, a window prompt should appear
+- **Windows users:** Download the latest Snowflake Showcase App for Mendix Studio Pro version 10.12 from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845)
+  - **Windows users:** Once downloaded, execute the file titled `SFShowcase.mpk`, a window prompt should appear
+- **macOS users:** Download the latest Snowflake Showcase App for Mendix Studio Pro from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845)
+  - **macOS users:** download the latest Mendix Studio Pro version for macOS from [here](https://marketplace.mendix.com/link/studiopro). Once installed, import the app package titled `SFShowcase.mpk` .
 - Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro version 10.12
 - Inside Mendix Studio Pro, navigate to `Version Control`, then click `Upload to Version Control Server...` and confirm by clicking `OK`. A window titled Upload App to Team Server should appear
 - After the project has been uploaded to version control server, click `Publish`
@@ -117,10 +119,13 @@ Upon starting the application, a documentation page that includes usage instruct
 
 The home page, titled `Data Source Overview`, displays all your existing data sources. To create a new one, click the `Create` button to access the `Create New Data Source` page. Here, you will provide the following information:
 
-- `Name`: A unique identifier for your data source.
-- `API endpoint`: The URL of your published OData resource, `{{YOUR_SAVED_ENDPOINT}}/odata/{{ODATA_NAME}}/v1/` e.g., `https://sfshowcase101-sandbox.mxapps.io/odata/MoviesBasic/v1/`
+- `Name`: A unique identifier for your data source within the Mendix Data Loader.
+- `API endpoint`: The URL of your published Mendix OData resource. Use the base endpoint you saved earlier and append the OData path, for example:  
+  `{{YOUR_SAVED_ENDPOINT}}/odata/{{ODATA_NAME}}/v1/`  
+  Example: `https://sfshowcase101-sandbox.mxapps.io/odata/MoviesBasic/v1/`
+- `Use Delta Ingestion`: When enabled, only objects that have been created or modified since the previous ingestion run are retrieved. During the first ingestion, all available data is ingested.
 
-When you press `Save` for the first time, a popup will appear requesting permissions to grant the application the following privileges:
+When you click `Save` for the first time, a popup will appear requesting permission to grant the application the following privileges:
 
 1. `CREATE DATABASE`: To create the target database where ingested data will be stored.
 2. `EXECUTE TASK`: To enable the scheduling of ingestion jobs.
@@ -136,9 +141,13 @@ Choose the `Basic` option in the presented dropdown field and specify the follow
 - `Username`: For example, SFDataLoaderUser (or any user with access to your OData resource).
 - `Password`: For example, MendixSnowflake123 (or the corresponding password for the user).
 
+Generate the script and run it in a worksheet with enough permissions to finalize the Authentication setup.
+
 ### Configure the Staging Area
 
 The final step before data ingestion is to configure the staging area. The staging area consists of a target database and target schema where data will temporarily reside before you transport/process it into a database owned by your organization.
+
+Navigate to the `Ingestion Configuration` tab ands click the `Create` Button to setup where in the database you want to set up the staging area.
 
 - `Target database name`: For example, MOVIE_DB
 - `Target schema name`: For example, MOVIE_APP
