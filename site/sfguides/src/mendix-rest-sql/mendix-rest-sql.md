@@ -452,18 +452,31 @@ We now create a microflow that updates the Snowflake table when changes are save
 2. Update the configuration as follows:
 
 ```text
-  - SQLStatement: 
-  'UPDATE EMPLOYEE_INFO SET 
-    NAME = ''' + $Employee/Name+ ''', 
-    SURNAME = ''' + $Employee/Surname+ ''', 
-    DATE_OF_BIRTH = to_timestamp_ntz(''' + formatDateTime($Employee/Date_of_Birth_Parsed, 'yyyy-MM-dd') + '''), 
-    IS_ACTIVE_EMPLOYEE = ''' + toString($Employee/Is_Active_Employee) + '''  
-   WHERE EMPLOYEE_ID = ' + $Employee/Employee_ID + ';'
+  - SQLStatement:
+    'UPDATE EMPLOYEE_INFO SET
+      NAME = ?,
+      SURNAME = ?,
+      DATE_OF_BIRTH = to_timestamp_ntz(?),
+      IS_ACTIVE_EMPLOYEE = ?
+    WHERE EMPLOYEE_ID = ?;
+
   - Database: 'DATABASE_QuickStart'
   - Schema: 'SCHEMA_QuickStart'
   - Warehouse: *Desired warehouse*
   - Role: *Snowflake role with sufficient rights to execute statement*
 ```
+
+- Parameters:
+  1. → $Employee/Name
+  2. → $Employee/Surname
+  3. → formatDateTime($Employee/Date_of_Birth_Parsed, 'yyyy-MM-dd')
+  4. → $Employee/Is_Active_Employee
+  5. → $Employee/Employee_ID
+
+Create a **Mendix Binding** object (from the **SnowflakeRESTSQL** module) for each parameter.
+Set the correct **Value** and **BindingType** (`SnowflakeRESTSQL.ENUM_BindingType`), and associate each Binding with the **Statement** object.
+
+When configured correctly, the `?` placeholders in the SQL statement are safely populated using these bindings, in the same order in which you created them.
 
 #### Using Parameter Binding in Snowflake Queries
 
