@@ -33,7 +33,7 @@ The following architecture illustrates how Mendix application data flows into Sn
 To complete this tutorial, you will need:
 
 - A Mendix account. If you don’t have one, sign up [here](https://signup.mendix.com/)
-- Mendix Studio Pro version [10.12](https://marketplace.mendix.com/link/studiopro/10.12.0) or later
+- Mendix Studio Pro version [10.21.0](https://marketplace.mendix.com/link/studiopro/10.21.0) or later
 - A Snowflake account with **Anaconda Packages enabled by an ORGADMIN**  
   For details, see the Snowflake documentation [here](https://docs.snowflake.com/en/developer-guide/udf/python/udf-python-packages.html#using-third-party-packages-from-anaconda).  
   If you do not yet have a Snowflake account, you can register for a [free trial](https://signup.snowflake.com/?utm_source=snowflake-devrel&utm_medium=developer-guides&utm_cta=developer-guides).
@@ -53,6 +53,8 @@ If you already have a Mendix application and only want to connect it to Snowflak
 
 ## (Optional) Setting Up Your Mendix Application
 
+The following steps are only required if you do not already have a valid OData endpoint. If you already have an existing endpoint that you want to use without deploying a new Mendix application, you can skip ahead to **Install the Mendix Data Loader**.
+
 ### Mendix
 
 Mendix stands as a leading low-code platform for developing enterprise-grade applications, offering unmatched speed, flexibility, and scalability. Mendix's seamless integration with Snowflake’s enterprise data environment makes it an essential tool for building robust, data-driven applications. The platform’s intuitive visual development environment accelerates the creation of complex applications, significantly reducing development time while maintaining high standards of quality and performance.
@@ -65,23 +67,21 @@ With Mendix, data engineers can focus on what truly matters—maximizing the pow
 
 Follow the steps below to deploy a sample Mendix application that will be used later in this Quickstart.
 
-- **Windows users:** Download the latest Snowflake Showcase App for Mendix Studio Pro version 10.12 from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845)
+- **Windows users:** Download the latest Snowflake Showcase App for Mendix Studio Pro version 10.21.0 from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845)
   - **Windows users:** Once downloaded, execute the file titled `SFShowcase.mpk`, a window prompt should appear
 - **macOS users:** Download the latest Snowflake Showcase App for Mendix Studio Pro from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845)
   - **macOS users:** download the latest Mendix Studio Pro version for macOS from [here](https://marketplace.mendix.com/link/studiopro). Once installed, import the app package titled `SFShowcase.mpk` .
-- Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro version 10.12
+- Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro version 10.21.0
 - Inside Mendix Studio Pro, navigate to `Version Control`, then click `Upload to Version Control Server...` and confirm by clicking `OK`. A window titled Upload App to Team Server should appear
 - After the project has been uploaded to version control server, click `Publish`
+![Deploying your Mendix application](assets/publish.png)
 - After a while a snackbar notification is displayed `Your application is published`
 - Click `View App` to see the login screen for your Mendix application
-  - (Optional) To log into your Mendix application
-    - Use the username `demo_user`
-    - To retrieve the password for this user inside Mendix Studio Pro, navigate to `App 'SFShowcase'` -> `Security` -> `Demo users` -> `demo_user` and then click the link that reads `Copy password to clipboard`
+  - (Optional) To log into your Mendix application and learn more about the Mendix platform in combination with Snowflake implementations.
+    - Use the username `MxAdmin` with the password `1`
 - Save the endpoint of your Mendix application, you'll need it later
-  - Save `https://sfshowcase101-sandbox.mxapps.io/` if your endpoint is `https://sfshowcase101-sandbox.mxapps.io/login.html?profile=Responsive` 
+  - Save `https://sfshowcase101-sandbox.mxapps.io/` if your endpoint is `https://sfshowcase101-sandbox.mxapps.io/login.html?profile=Responsive`
 - You have successfully deployed the Snowflake Showcase App onto a free cloud sandbox environment!
-
-![Deploying your Mendix application](assets/publish.png)
 
 ### About this Mendix Application
 
@@ -121,9 +121,9 @@ The home page, titled `Data Source Overview`, displays all your existing data so
 
 - `Name`: A unique identifier for your data source within the Mendix Data Loader.
 - `API endpoint`: The URL of your published Mendix OData resource. Use the base endpoint you saved earlier and append the OData path, for example:  
-  `{{YOUR_SAVED_ENDPOINT}}/odata/{{ODATA_NAME}}/v1/`  
-  Example: `https://sfshowcase101-sandbox.mxapps.io/odata/MoviesBasic/v1/`
-- `Use Delta Ingestion`: When enabled, only objects that have been created or modified since the previous ingestion run are retrieved. During the first ingestion, all available data is ingested.
+  `{{YOUR_SAVED_ENDPOINT}}/odata/{{ODATA_NAME}}/v3/`  
+  Example: `https://sfshowcase101-sandbox.mxapps.io/odata/MoviesBasic/v3/`
+- `Use Delta Ingestion`: When enabled, only objects that have been created or modified since the previous ingestion run are retrieved. During the first ingestion, all available data is ingested. For this functionality, you need to have the changedDate parameter enabled inside the Mendix endpoint, otherwise the ingestion will fail on consecutive runs.
 
 When you click `Save` for the first time, a popup will appear requesting permission to grant the application the following privileges:
 
