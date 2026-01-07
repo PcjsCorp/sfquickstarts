@@ -74,6 +74,7 @@ Follow the steps below to deploy a sample Mendix application that will be used l
 - Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro version 10.21.0
 - Inside Mendix Studio Pro, navigate to `Version Control`, then click `Upload to Version Control Server...` and confirm by clicking `OK`. A window titled Upload App to Team Server should appear
 - After the project has been uploaded to version control server, click `Publish`
+
 ![Deploying your Mendix application](assets/publish.png)
 - After a while a snackbar notification is displayed `Your application is published`
 - Click `View App` to see the login screen for your Mendix application
