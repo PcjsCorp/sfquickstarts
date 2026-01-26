@@ -74,7 +74,7 @@ Follow the steps below to deploy a sample Mendix application that will be used l
     - **Windows users:** Download the latest Snowflake Showcase App for Mendix Studio Pro version 10.21.0 from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845), and then execute the file titled `SFShowcase.mpk`. A window prompt should appear.
     - **macOS users:** Download the latest Snowflake Showcase App for Mendix Studio Pro from the [Mendix Marketplace](https://marketplace.mendix.com/link/component/225845) and the latest Mendix Studio Pro version for macOS from [here](https://marketplace.mendix.com/link/studiopro). Once installed, import the app package titled `SFShowcase.mpk`.
 
-2. Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro version 10.21.0.
+2. Create a new folder and select it to unpack the project files. After unpacking, the project should appear in Mendix Studio Pro.
 3. Inside Mendix Studio Pro, navigate to **Version Control**.
 4. Click **Upload to Version Control Server**, and then click **OK**. A window titled **Upload App to Team Server** should appear.
 5. After the project has been uploaded to version control server, click **Publish**.
