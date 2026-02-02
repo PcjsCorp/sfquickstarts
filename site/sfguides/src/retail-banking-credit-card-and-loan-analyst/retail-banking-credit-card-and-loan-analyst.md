@@ -160,8 +160,8 @@ The solution deploys a single orchestrating agent with specialized analytical to
 
 To get started with this solution:
 
-1. Review the **[README](./assets/README.md)** in the assets folder for detailed deployment instructions
-2. Open **[setup.sql](./assets/setup.sql)** in a Snowflake SQL Worksheet and execute all statements to deploy the solution
+1. Review the **[README](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/retail-banking-credit-card-and-loan-analyst/assets/README.md)** for detailed deployment instructions
+2. Open **[setup.sql](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/retail-banking-credit-card-and-loan-analyst/assets/setup.sql)** in a Snowflake SQL Worksheet and execute all statements to deploy the solution
 
 The following objects are deployed within the secure and governed Snowflake environment to enable the solution:
 
