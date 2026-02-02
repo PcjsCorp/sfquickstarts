@@ -158,7 +158,10 @@ The solution deploys a single orchestrating agent with specialized analytical to
 <!-- ------------------------ -->
 ## Get Started
 
-To get started with this solution, fork the **[GitHub repository](https://github.com/Snowflake-Labs/sfguide-retail-banking-credit-card-and-loan-analyst)**.
+To get started with this solution:
+
+1. Review the **[README](./assets/README.md)** in the assets folder for detailed deployment instructions
+2. Open **[setup.sql](./assets/setup.sql)** in a Snowflake SQL Worksheet and execute all statements to deploy the solution
 
 The following objects are deployed within the secure and governed Snowflake environment to enable the solution:
 
