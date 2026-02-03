@@ -1,0 +1,350 @@
+name: Stage Quickstart to AEM
+
+on:
+  workflow_call:
+    inputs:
+      quickstart_name:
+        description: 'Name of the quickstart folder'
+        required: true
+        type: string
+      language:
+        description: 'Language code (en, es, it, fr, de, ja, ko, pt_br)'
+        required: true
+        type: string
+      commit_sha:
+        description: 'Commit SHA for unique staging URL'
+        required: true
+        type: string
+      pr_number:
+        description: 'PR number for commenting'
+        required: true
+        type: number
+    secrets:
+      AEM_SERVICE_TOKEN:
+        description: 'AEM service account bearer token'
+        required: true
+      AEM_AUTHOR_URL:
+        description: 'AEM author instance URL'
+        required: true
+      AEM_PUBLISH_URL:
+        description: 'AEM publish instance URL'
+        required: true
+
+env:
+  BASE_CF_PATH: /content/dam/snowflake-site/en/content-fragments/base-fragments/base-quickstart-cf
+  CF_DEST_PATH: /content/dam/snowflake-site
+  PAGE_BASE_PATH: /content/snowflake-site/global/en/developers/guides/quickstart-base
+  DAM_GUIDES_PATH: /content/dam/snowflake-site/developers/guides
+
+jobs:
+  stage_quickstart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_sha }}
+          sparse-checkout: |
+            site/sfguides/src/${{ inputs.quickstart_name }}
+            scripts/aem-staging
+          sparse-checkout-cone-mode: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Find markdown file
+        id: find_md
+        run: |
+          md_file=$(find "site/sfguides/src/${{ inputs.quickstart_name }}" -maxdepth 1 -name "*.md" -type f | head -n1)
+          if [ -z "$md_file" ]; then
+            echo "❌ No markdown file found in ${{ inputs.quickstart_name }}"
+            exit 1
+          fi
+          echo "md_file=$md_file" >> $GITHUB_OUTPUT
+          echo "📄 Found markdown: $md_file"
+
+      - name: Parse markdown and prepare AEM payload
+        id: parse_md
+        env:
+          COMMIT_SHA: ${{ inputs.commit_sha }}
+          QUICKSTART_NAME: ${{ inputs.quickstart_name }}
+          BASE_IMAGE_URL: "https://raw.githubusercontent.com/${{ github.repository }}/${{ inputs.commit_sha }}/site/sfguides/src"
+        run: |
+          python3 scripts/aem-staging/parse_markdown.py \
+            "${{ steps.find_md.outputs.md_file }}" \
+            --commit-sha "$COMMIT_SHA" \
+            --quickstart-name "$QUICKSTART_NAME" \
+            --base-image-url "$BASE_IMAGE_URL" \
+            --output-json parsed_content.json
+          
+          cat parsed_content.json
+
+      - name: Copy base content fragment to staging
+        id: copy_cf
+        env:
+          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          cf_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
+          dest_path="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
+          
+          echo "📋 Copying base CF to: $dest_path/$cf_name"
+          
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${AEM_URL}${BASE_CF_PATH}" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d ":operation=copy" \
+            -d ":dest=${dest_path}/${cf_name}" \
+            -d ":applyTo=recursive" \
+            -d ":replace=true")
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "HTTP Status: $http_code"
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "❌ Failed to copy content fragment"
+            echo "$body"
+            exit 1
+          fi
+          
+          echo "cf_path=${dest_path}/${cf_name}" >> $GITHUB_OUTPUT
+          echo "✅ Content fragment created"
+
+      - name: Wait for AEM processing
+        run: sleep 3
+
+      - name: Update content fragment with parsed content
+        env:
+          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          cf_path="${{ steps.copy_cf.outputs.cf_path }}"
+          
+          title=$(jq -r '.title' parsed_content.json)
+          slug=$(jq -r '.id' parsed_content.json)
+          summary=$(jq -r '.summary // ""' parsed_content.json)
+          authors=$(jq -r '.authors // .author // ""' parsed_content.json)
+          categories=$(jq -r '.categories // ""' parsed_content.json)
+          markdown=$(jq -r '.markdown' parsed_content.json)
+          fork_repo_link=$(jq -r '.fork_repo_link // ""' parsed_content.json)
+          
+          fork_repo_link="${fork_repo_link:-https://github.com/Snowflake-Labs/sfquickstarts/tree/master/site/sfguides/src/${slug}}"
+          
+          echo "📝 Updating content fragment: $cf_path"
+          echo "   Title: $title"
+          echo "   Slug: $slug"
+          
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${AEM_URL}${cf_path}/jcr:content" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "./jcr:title=${title}" \
+            --data-urlencode "./data/master/quickstartArticleTitle=${title}" \
+            --data-urlencode "./data/master/quickstartArticleSlug=${slug}" \
+            --data-urlencode "./data/master/quickstartArticleSummary=${summary}" \
+            --data-urlencode "./data/master/quickstartArticleAuthors=${authors}" \
+            --data-urlencode "./data/master/quickstartArticleBody=${markdown}" \
+            --data-urlencode "./data/master/quickstartForkRepoLink=${fork_repo_link}" \
+            -d "./cq:lastModified=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" \
+            -d "./cq:lastModified@TypeHint=Date")
+          
+          http_code=$(echo "$response" | tail -n1)
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "❌ Failed to update content fragment"
+            echo "$response" | sed '$d'
+            exit 1
+          fi
+          echo "✅ Content fragment updated"
+
+      - name: Collect and upload images
+        env:
+          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          assets_dir="site/sfguides/src/${{ inputs.quickstart_name }}/assets"
+          dam_folder="${DAM_GUIDES_PATH}/${{ inputs.quickstart_name }}"
+          
+          if [ ! -d "$assets_dir" ]; then
+            echo "📁 No assets folder found, skipping image upload"
+            exit 0
+          fi
+          
+          echo "📁 Creating DAM folder: $dam_folder"
+          curl -s -X POST \
+            "${AEM_URL}${DAM_GUIDES_PATH}" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "./jcr:primaryType=sling:Folder" \
+            -d ":name=${{ inputs.quickstart_name }}" || true
+          
+          sleep 2
+          
+          for img in "$assets_dir"/*; do
+            [ -f "$img" ] || continue
+            
+            filename=$(basename "$img")
+            extension="${filename##*.}"
+            
+            case "$extension" in
+              jpg|jpeg|png|gif|svg|webp|bmp|ico|tiff)
+                echo "📤 Uploading: $filename"
+                
+                content_type="image/$extension"
+                [ "$extension" = "jpg" ] && content_type="image/jpeg"
+                [ "$extension" = "svg" ] && content_type="image/svg+xml"
+                
+                curl -s -X POST \
+                  "${AEM_URL}${dam_folder}.createasset.html" \
+                  -H "Authorization: Bearer $AEM_TOKEN" \
+                  -F "file=@${img};type=${content_type}" \
+                  -F "fileName=${filename}" || echo "⚠️ Warning: Failed to upload $filename"
+                
+                sleep 1
+                
+                echo "🔄 Reprocessing: $filename"
+                curl -s -X POST \
+                  "${AEM_URL}/bin/asynccommand" \
+                  -H "Authorization: Bearer $AEM_TOKEN" \
+                  -H "Content-Type: application/x-www-form-urlencoded" \
+                  -d "operation=PROCESS" \
+                  -d "asset=${dam_folder}/${filename}" \
+                  -d "profile-select=full-process" || true
+                
+                sleep 1
+                
+                echo "📢 Publishing: $filename"
+                curl -s -X POST \
+                  "${AEM_URL}/bin/replicate.json" \
+                  -H "Authorization: Bearer $AEM_TOKEN" \
+                  -H "Content-Type: application/x-www-form-urlencoded" \
+                  -d "cmd=Activate" \
+                  -d "path=${dam_folder}/${filename}" || true
+                ;;
+              *)
+                echo "⏭️ Skipping non-image file: $filename"
+                ;;
+            esac
+          done
+          
+          echo "✅ Image upload complete"
+
+      - name: Wait for image processing
+        run: sleep 15
+
+      - name: Publish content fragment
+        env:
+          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          cf_path="${{ steps.copy_cf.outputs.cf_path }}"
+          
+          echo "📢 Publishing content fragment: $cf_path"
+          
+          curl -s -X POST \
+            "${AEM_URL}/bin/replicate.json" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "cmd=Activate" \
+            -d "path=${cf_path}"
+          
+          echo "✅ Content fragment published"
+
+      - name: Create staging page from base
+        id: create_page
+        env:
+          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          page_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
+          page_path="/content/snowflake-site/global/${{ inputs.language }}/developers/guides/${page_name}"
+          title=$(jq -r '.title' parsed_content.json)
+          
+          echo "📄 Creating page: $page_path"
+          
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${AEM_URL}${PAGE_BASE_PATH}" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d ":operation=copy" \
+            -d ":dest=${page_path}" \
+            -d ":replace=true")
+          
+          http_code=$(echo "$response" | tail -n1)
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "⚠️ Warning: Page copy may have failed (HTTP $http_code)"
+          fi
+          
+          sleep 4
+          
+          cf_path="${{ steps.copy_cf.outputs.cf_path }}"
+          echo "🔗 Linking page to content fragment: $cf_path"
+          
+          curl -s -X POST \
+            "${AEM_URL}${page_path}/jcr:content" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            --data-urlencode "./jcr:title=${title}" \
+            -d "./cq:template=/conf/snowflake-site/settings/wcm/templates/quickstart-article" \
+            -d "./root/container/quickstart_content_fr/fragmentPath=${cf_path}"
+          
+          echo "page_path=${page_path}" >> $GITHUB_OUTPUT
+          echo "✅ Page created"
+
+      - name: Wait for page processing
+        run: sleep 60
+
+      - name: Publish staging page
+        env:
+          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          page_path="${{ steps.create_page.outputs.page_path }}"
+          
+          echo "📢 Publishing page: $page_path"
+          
+          curl -s -X POST \
+            "${AEM_URL}/bin/replicate.json" \
+            -H "Authorization: Bearer $AEM_TOKEN" \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "cmd=Activate" \
+            -d "path=${page_path}"
+          
+          echo "✅ Page published"
+
+      - name: Comment PR with staging URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const publishUrl = '${{ secrets.AEM_PUBLISH_URL }}';
+            const language = '${{ inputs.language }}';
+            const quickstartName = '${{ inputs.quickstart_name }}';
+            const commitSha = '${{ inputs.commit_sha }}';
+            
+            const stagingUrl = `${publishUrl}/${language}/developers/guides/${quickstartName}-${commitSha}`;
+            
+            const body = `## 🔗 Staging Preview Ready
+            
+            **Quickstart:** \`${quickstartName}\`
+            **Language:** ${language}
+            
+            👉 **Preview URL:** ${stagingUrl}
+            
+            > **Note:** Images are uploaded asynchronously. If images are missing, wait a few minutes and refresh.
+            
+            ---
+            *Generated by GitHub Actions*`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ inputs.pr_number }},
+              body
+            });
