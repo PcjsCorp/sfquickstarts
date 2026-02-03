@@ -20,8 +20,11 @@ on:
         required: true
         type: number
     secrets:
-      AEM_SERVICE_TOKEN:
-        description: 'AEM service account bearer token'
+      AEM_USERNAME:
+        description: 'AEM username for basic auth'
+        required: true
+      AEM_PASSWORD:
+        description: 'AEM password for basic auth'
         required: true
       AEM_AUTHOR_URL:
         description: 'AEM author instance URL'
@@ -88,7 +91,8 @@ jobs:
       - name: Copy base content fragment to staging
         id: copy_cf
         env:
-          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           cf_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
@@ -98,7 +102,7 @@ jobs:
           
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${BASE_CF_PATH}" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d ":operation=copy" \
             -d ":dest=${dest_path}/${cf_name}" \
@@ -123,7 +127,8 @@ jobs:
 
       - name: Update content fragment with parsed content
         env:
-          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           cf_path="${{ steps.copy_cf.outputs.cf_path }}"
@@ -144,7 +149,7 @@ jobs:
           
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${cf_path}/jcr:content" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "./jcr:title=${title}" \
             --data-urlencode "./data/master/quickstartArticleTitle=${title}" \
@@ -166,7 +171,8 @@ jobs:
 
       - name: Collect and upload images
         env:
-          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           assets_dir="site/sfguides/src/${{ inputs.quickstart_name }}/assets"
@@ -180,7 +186,7 @@ jobs:
           echo "📁 Creating DAM folder: $dam_folder"
           curl -s -X POST \
             "${AEM_URL}${DAM_GUIDES_PATH}" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "./jcr:primaryType=sling:Folder" \
             -d ":name=${{ inputs.quickstart_name }}" || true
@@ -203,7 +209,7 @@ jobs:
                 
                 curl -s -X POST \
                   "${AEM_URL}${dam_folder}.createasset.html" \
-                  -H "Authorization: Bearer $AEM_TOKEN" \
+                  -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
                   -F "file=@${img};type=${content_type}" \
                   -F "fileName=${filename}" || echo "⚠️ Warning: Failed to upload $filename"
                 
@@ -212,7 +218,7 @@ jobs:
                 echo "🔄 Reprocessing: $filename"
                 curl -s -X POST \
                   "${AEM_URL}/bin/asynccommand" \
-                  -H "Authorization: Bearer $AEM_TOKEN" \
+                  -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
                   -H "Content-Type: application/x-www-form-urlencoded" \
                   -d "operation=PROCESS" \
                   -d "asset=${dam_folder}/${filename}" \
@@ -223,7 +229,7 @@ jobs:
                 echo "📢 Publishing: $filename"
                 curl -s -X POST \
                   "${AEM_URL}/bin/replicate.json" \
-                  -H "Authorization: Bearer $AEM_TOKEN" \
+                  -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
                   -H "Content-Type: application/x-www-form-urlencoded" \
                   -d "cmd=Activate" \
                   -d "path=${dam_folder}/${filename}" || true
@@ -241,7 +247,8 @@ jobs:
 
       - name: Publish content fragment
         env:
-          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           cf_path="${{ steps.copy_cf.outputs.cf_path }}"
@@ -250,7 +257,7 @@ jobs:
           
           curl -s -X POST \
             "${AEM_URL}/bin/replicate.json" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "cmd=Activate" \
             -d "path=${cf_path}"
@@ -260,7 +267,8 @@ jobs:
       - name: Create staging page from base
         id: create_page
         env:
-          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           page_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
@@ -271,7 +279,7 @@ jobs:
           
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${PAGE_BASE_PATH}" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d ":operation=copy" \
             -d ":dest=${page_path}" \
@@ -289,7 +297,7 @@ jobs:
           
           curl -s -X POST \
             "${AEM_URL}${page_path}/jcr:content" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             --data-urlencode "./jcr:title=${title}" \
             -d "./cq:template=/conf/snowflake-site/settings/wcm/templates/quickstart-article" \
@@ -303,7 +311,8 @@ jobs:
 
       - name: Publish staging page
         env:
-          AEM_TOKEN: ${{ secrets.AEM_SERVICE_TOKEN }}
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           page_path="${{ steps.create_page.outputs.page_path }}"
@@ -312,7 +321,7 @@ jobs:
           
           curl -s -X POST \
             "${AEM_URL}/bin/replicate.json" \
-            -H "Authorization: Bearer $AEM_TOKEN" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "cmd=Activate" \
             -d "path=${page_path}"

@@ -8,20 +8,18 @@ Configure these secrets in your repository settings (`Settings > Secrets and var
 
 | Secret Name | Description | Example |
 |------------|-------------|---------|
-| `AEM_SERVICE_TOKEN` | AEM service account bearer token for API authentication | `eyJhbGciOiJSUzI1NiIs...` |
+| `AEM_USERNAME` | AEM username for basic authentication | `aem-user@company.com` |
+| `AEM_PASSWORD` | AEM password for basic authentication | `********` |
 | `AEM_AUTHOR_URL` | AEM author instance base URL (no trailing slash) | `https://author-p57963-e462109.adobeaemcloud.com` |
 | `AEM_PUBLISH_URL` | AEM publish instance base URL (no trailing slash) | `https://publish-p57963-e462098.adobeaemcloud.com` |
 
-### Obtaining AEM Service Token
+### AEM User Requirements
 
-1. Go to Adobe Developer Console
-2. Create or select your AEM as a Cloud Service project
-3. Generate service account credentials (Technical Account)
-4. The token should have permissions for:
-   - DAM asset upload/modification
-   - Content fragment CRUD
-   - Page creation/modification
-   - Replication (publish)
+The AEM user account must have permissions for:
+- DAM asset upload/modification
+- Content fragment CRUD operations
+- Page creation/modification
+- Replication (publish)
 
 ## Architecture
 
@@ -104,8 +102,8 @@ https://publish-p57963-e462098.adobeaemcloud.com/en/developers/guides/getting-st
 
 ### Common Issues
 
-1. **401 Unauthorized**: Check `AEM_SERVICE_TOKEN` is valid and not expired
-2. **403 Forbidden**: Verify token has required permissions
+1. **401 Unauthorized**: Check `AEM_USERNAME` and `AEM_PASSWORD` are correct
+2. **403 Forbidden**: Verify the AEM user has required permissions
 3. **404 Not Found**: Base content fragment or page template may be missing
 4. **Images not appearing**: Wait a few minutes for async processing
 
@@ -113,5 +111,5 @@ https://publish-p57963-e462098.adobeaemcloud.com/en/developers/guides/getting-st
 
 1. Check workflow logs in GitHub Actions
 2. Verify secrets are properly configured
-3. Test AEM API manually with curl using the token
+3. Test AEM API manually with curl: `curl -u "user:pass" {AEM_AUTHOR_URL}/content/dam.json`
 4. Check AEM author instance for created assets/fragments
