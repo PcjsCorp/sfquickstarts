@@ -3,7 +3,7 @@ name: Validate markdown and stage
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, edited, ready_for_review]
-    branches: [master]
+    branches: [workato_replacement_master]
 
 jobs:
   validate_and_stage:
@@ -562,147 +562,25 @@ jobs:
           
           echo "quickstart_names_json=$objs" >> $GITHUB_OUTPUT
 
-  call_staging_webhooks:
+  stage_to_aem:
     needs: validate_and_stage
-    # Only call webhooks if validations passed, there are relevant changes, and less than 7 markdown files modified
     if: |
       needs.validate_and_stage.outputs.has_relevant_changes == 'true' && 
       needs.validate_and_stage.outputs.all_validations_passed == 'true' &&
       needs.validate_and_stage.outputs.md_file_count < 7
-    runs-on: ubuntu-latest
-    environment:
-      name: staging
-    permissions:
-      contents: read
-      pull-requests: write
     strategy:
       matrix:
         quickstart: ${{ fromJson(needs.validate_and_stage.outputs.quickstart_names_json) }}
-      max-parallel: 1  # Process 1 at a time for rate limit purposes
-      fail-fast: false  # Continue processing others even if one fails
-    
-    steps:
-      - name: Call Workato staging webhook for ${{ matrix.quickstart.name }}
-        id: call_webhook_matrix
-        env:
-          WORKATO_STAGING_WEBHOOK_URL: ${{ secrets.WORKATO_STAGING_SINGLE_FILE_URL }}
-        run: |
-          if [ -z "$WORKATO_STAGING_WEBHOOK_URL" ]; then
-            echo "❌ WORKATO_STAGING_WEBHOOK_URL is not set"
-            exit 1
-          fi
-          
-          qname="${{ matrix.quickstart.name }}"
-          qlang="${{ matrix.quickstart.language }}"
-          
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "📦 Processing quickstart: $qname"
-          echo "🌐 Language: $qlang"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          
-          # Create single-item array for backward compatibility with Workato
-          qnames_array=$(jq -n --arg name "$qname" --arg lang "$qlang" '[{name:$name, language:$lang}]')
-          
-          payload=$(jq -n \
-            --arg repo "$GITHUB_REPOSITORY" \
-            --arg pr '${{ github.event.pull_request.number }}' \
-            --arg sha '${{ github.event.pull_request.head.sha }}' \
-            --arg env "staging" \
-            --arg qname "$qname" \
-            --argjson qnames "$qnames_array" \
-            '{repo:$repo, pr_number: ($pr|tonumber), commit_sha:$sha, environment:$env, quickstart_name:$qname, quickstart_names:$qnames}')
-          
-          echo "Payload:"
-          echo "$payload" | jq .
-          
-          # Retry configuration
-          max_retries=3
-          retry_count=0
-          base_delay=10
-          
-          while [ $retry_count -le $max_retries ]; do
-            if [ $retry_count -gt 0 ]; then
-              echo "🔄 Retry attempt $retry_count of $max_retries..."
-            else
-              echo "📡 Triggering webhook..."
-            fi
-            
-            response=$(curl -s -w "\n%{http_code}" -X POST "$WORKATO_STAGING_WEBHOOK_URL" \
-              -H "Content-Type: application/json" \
-              --data-raw "$payload" \
-              --max-time 10 \
-              --connect-timeout 5) || {
-              exit_code=$?
-              echo "❌ Connection failed (curl exit code: $exit_code)"
-              
-              if [ $retry_count -lt $max_retries ]; then
-                retry_count=$((retry_count + 1))
-                delay=$((base_delay * retry_count))
-                echo "⏳ Waiting ${delay}s before retry..."
-                sleep $delay
-                continue
-              else
-                echo "❌ Max retries reached"
-                exit 1
-              fi
-            }
-            
-            http_code=$(echo "$response" | tail -n1)
-            response_body=$(echo "$response" | sed '$d')
-            
-            echo "HTTP Status: $http_code"
-            echo "Response:"
-            echo "$response_body" | jq . 2>/dev/null || echo "$response_body"
-            
-            if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
-              echo "✅ Webhook succeeded for: $qname"
-              # Wait 2 minutes after processing to avoid rate limits for next item
-              echo "⏳ Waiting 2 minutes before next webhook..."
-              sleep 120
-              exit 0
-            fi
-            
-            # Rate limit handling
-            if echo "$response_body" | grep -qi "rate limit"; then
-              if [ $retry_count -lt $max_retries ]; then
-                retry_count=$((retry_count + 1))
-                delay=$((base_delay * retry_count * 2))  # Longer delay for rate limits
-                echo "⚠️ Rate limit detected. Waiting ${delay}s..."
-                sleep $delay
-                continue
-              fi
-            elif [ $retry_count -lt $max_retries ]; then
-              retry_count=$((retry_count + 1))
-              delay=$((base_delay * retry_count))
-              echo "⚠️ HTTP $http_code. Waiting ${delay}s before retry..."
-              sleep $delay
-              continue
-            fi
-            
-            echo "❌ Failed after $max_retries retries"
-            exit 1
-          done
-
-
-      - name: Report webhook failure to PR
-        if: failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const qname = '${{ matrix.quickstart.name }}';
-            const body = `## ⚠️ Staging Webhook Failed for \`${qname}\`
-            
-            The staging webhook call failed for quickstart **${qname}** after multiple retry attempts.
-            
-            ### Next Steps
-            - Check the [workflow logs](${context.payload.repository.html_url}/actions/runs/${context.runId}) for details
-            - If due to rate limiting, wait a few minutes and re-run the failed job
-            - Contact the devrel team if the issue persists
-            `;
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              body
-            });
+      max-parallel: 1
+      fail-fast: false
+    uses: ./.github/workflows/stage-to-aem.yml
+    with:
+      quickstart_name: ${{ matrix.quickstart.name }}
+      language: ${{ matrix.quickstart.language || 'en' }}
+      commit_sha: ${{ github.event.pull_request.head.sha }}
+      pr_number: ${{ github.event.pull_request.number }}
+    secrets:
+      AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+      AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
+      AEM_AUTHOR_URL: ${{ secrets.AEM_AUTHOR_URL }}
+      AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL }}
