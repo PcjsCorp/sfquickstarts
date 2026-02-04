@@ -1,4 +1,4 @@
-name: Validate markdown and stage
+name: Validate markdown and stage (Without Workato)
 
 on:
   workflow_dispatch:
