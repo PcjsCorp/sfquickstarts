@@ -566,12 +566,12 @@ jobs:
   stage_to_aem:
     needs: validate_and_stage_no_workato
     if: |
-      needs.validate_and_stage.outputs.has_relevant_changes == 'true' && 
-      needs.validate_and_stage.outputs.all_validations_passed == 'true' &&
-      needs.validate_and_stage.outputs.md_file_count < 7
+      needs.validate_and_stage_no_workato.outputs.has_relevant_changes == 'true' && 
+      needs.validate_and_stage_no_workato.outputs.all_validations_passed == 'true' &&
+      needs.validate_and_stage_no_workato.outputs.md_file_count < 7
     strategy:
       matrix:
-        quickstart: ${{ fromJson(needs.validate_and_stage.outputs.quickstart_names_json) }}
+        quickstart: ${{ fromJson(needs.validate_and_stage_no_workato.outputs.quickstart_names_json) }}
       max-parallel: 1
       fail-fast: false
     uses: ./.github/workflows/stage-to-aem.yml
