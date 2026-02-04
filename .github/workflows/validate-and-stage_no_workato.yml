@@ -1,9 +1,8 @@
 name: Validate markdown and stage (Without Workato)
 
 on:
-  workflow_dispatch:
-  pull_request_target:
-    types: [opened, synchronize, reopened, edited, ready_for_review]
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches: [workato_replacement_master]
 
 jobs:
