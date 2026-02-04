@@ -7,7 +7,7 @@ on:
     branches: [workato_replacement_master]
 
 jobs:
-  validate_and_stage:
+  validate_and_stage_no_workato:
     # Only run for PRs from branches in this repo (not forks) into master
     runs-on: ubuntu-latest
     environment:
@@ -564,7 +564,7 @@ jobs:
           echo "quickstart_names_json=$objs" >> $GITHUB_OUTPUT
 
   stage_to_aem:
-    needs: validate_and_stage
+    needs: validate_and_stage_no_workato
     if: |
       needs.validate_and_stage.outputs.has_relevant_changes == 'true' && 
       needs.validate_and_stage.outputs.all_validations_passed == 'true' &&
