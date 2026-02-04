@@ -1,6 +1,7 @@
-name: Validate markdown and stage
+name: Validate markdown and stage (Without Workato)
 
 on:
+  workflow_dispatch:
   pull_request_target:
     types: [opened, synchronize, reopened, edited, ready_for_review]
     branches: [workato_replacement_master]
@@ -584,3 +585,5 @@ jobs:
       AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
       AEM_AUTHOR_URL: ${{ secrets.AEM_AUTHOR_URL }}
       AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL }}
+
+# test
