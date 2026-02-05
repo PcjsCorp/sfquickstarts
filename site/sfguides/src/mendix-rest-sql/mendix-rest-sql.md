@@ -1,8 +1,9 @@
-author: Ayca Öner
-id: mendix_rest_sql_connector
+author: Ayca Oner
+id: mendix-rest-sql
 summary: Quickstart on how to use the Mendix REST SQL Connector to integrate Snowflake data into a Mendix application using REST-based SQL execution.
-categories: connectors, partner-integrations
+categories: snowflake-site:taxonomy/solution-center/certification/quickstart, snowflake-site:taxonomy/solution-center/certification/partner-solution, snowflake-site:taxonomy/solution-center/includes/architecture
 environments: web
+language: en
 status: Published
 tags: Getting Started, Data Science, Data Engineering, Connectors, Native Apps, External Connectivity, Mendix
 
