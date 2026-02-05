@@ -300,7 +300,7 @@ select * from analytics_db.public.fct_customer_orders_dt;
 1. Navigate to `Database Explorer` > `ANALYTICS_DB` > `PUBLIC` > `Dynamic Tables` > `FCT_CUSTOMER_ORDERS_DT`
 2. Click on "Refresh History" to see a table showing when the Dynamic Table was refreshed and the status of each refresh
 
-![Management view](./assets/management.png)
+![Management view](./assets/mangagement.png)
 
 
 ## Conclusion And Resources
