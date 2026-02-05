@@ -56,7 +56,7 @@ To complete this lab, you'll need a Snowflake account. A free Snowflake trial ac
 
 The setup script automates the creation of warehouses, databases, and sample data.
 
-1. In Snowsight, create a SQL worksheet and copy setup.sql [mlh.link/snowflake-de-data] (need to update link) to execute all statements in order from top to bottom.
+1. In Snowsight, create a SQL worksheet and copy [setup.sql](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/create-declarative-data-pipelines-with-dynamic-tables/assets/setup.sql) to execute all statements in order from top to bottom.
 
 The complete setup script creates:
    - A warehouse (`COMPUTE_WH`) for compute operations
