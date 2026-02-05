@@ -106,6 +106,38 @@ jobs:
           echo "📦 AEM payload prepared:"
           cat aem_payload.json
 
+      - name: Ensure destination folder exists
+        env:
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          dest_folder="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
+          
+          echo "📁 Checking if destination folder exists: $dest_folder"
+          
+          check_response=$(curl -s -w "\n%{http_code}" \
+            "${AEM_URL}${dest_folder}.json" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+          
+          check_code=$(echo "$check_response" | tail -n1)
+          
+          if [ "$check_code" -eq 200 ]; then
+            echo "✅ Folder already exists"
+          else
+            echo "📁 Creating folder: $dest_folder"
+            
+            curl -s -X POST \
+              "${AEM_URL}${CF_DEST_PATH}/${{ inputs.language }}/content-fragments" \
+              -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              -d "./jcr:primaryType=sling:OrderedFolder" \
+              -d ":name=quickstarts"
+            
+            sleep 2
+            echo "✅ Folder created"
+          fi
+
       - name: Copy base content fragment to staging
         id: copy_cf
         env:
