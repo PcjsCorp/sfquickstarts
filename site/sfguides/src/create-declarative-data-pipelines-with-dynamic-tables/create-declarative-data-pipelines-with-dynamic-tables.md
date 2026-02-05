@@ -127,6 +127,9 @@ create or replace dynamic table stg_orders_dt
 
 The JSON unpacking format is: `COLUMN:"VAR_NAME"::TYPE_CAST as NEW_COL_NAME`
 
+![Unpacking JSON](./assets/UnpackingJSON.png)
+
+
 ### Verify the Dynamic Tables
 
 Query the new Dynamic Tables to see the transformed data:
