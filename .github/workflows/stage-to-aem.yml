@@ -72,7 +72,7 @@ jobs:
           echo "md_file=$md_file" >> $GITHUB_OUTPUT
           echo "📄 Found markdown: $md_file"
 
-      - name: Parse markdown and prepare AEM payload
+      - name: Parse markdown
         id: parse_md
         env:
           COMMIT_SHA: ${{ inputs.commit_sha }}
@@ -86,7 +86,25 @@ jobs:
             --base-image-url "$BASE_IMAGE_URL" \
             --output-json parsed_content.json
           
+          echo "📄 Parsed markdown content:"
           cat parsed_content.json
+
+      - name: Prepare AEM payload
+        id: prepare_payload
+        env:
+          CF_NAME: "${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
+          LANGUAGE: ${{ inputs.language }}
+        run: |
+          cf_path="${CF_DEST_PATH}/${LANGUAGE}/content-fragments/quickstarts/${CF_NAME}"
+          
+          python3 scripts/aem-staging/prepare_aem_payload.py \
+            parsed_content.json \
+            --content-fragment-path "$cf_path" \
+            --language "$LANGUAGE" \
+            --output-json aem_payload.json
+          
+          echo "📦 AEM payload prepared:"
+          cat aem_payload.json
 
       - name: Copy base content fragment to staging
         id: copy_cf
@@ -133,33 +151,18 @@ jobs:
         run: |
           cf_path="${{ steps.copy_cf.outputs.cf_path }}"
           
-          title=$(jq -r '.title' parsed_content.json)
-          slug=$(jq -r '.id' parsed_content.json)
-          summary=$(jq -r '.summary // ""' parsed_content.json)
-          authors=$(jq -r '.authors // .author // ""' parsed_content.json)
-          categories=$(jq -r '.categories // ""' parsed_content.json)
-          markdown=$(jq -r '.markdown' parsed_content.json)
-          fork_repo_link=$(jq -r '.fork_repo_link // ""' parsed_content.json)
-          
-          fork_repo_link="${fork_repo_link:-https://github.com/Snowflake-Labs/sfquickstarts/tree/master/site/sfguides/src/${slug}}"
+          # Get the pre-built URL-encoded payload from prepare_aem_payload.py
+          cf_payload=$(jq -r '.content_fragment_payload' aem_payload.json)
           
           echo "📝 Updating content fragment: $cf_path"
-          echo "   Title: $title"
-          echo "   Slug: $slug"
+          echo "   Title: $(jq -r '.title' parsed_content.json)"
+          echo "   Slug: $(jq -r '.id' parsed_content.json)"
           
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${cf_path}/jcr:content" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
-            --data-urlencode "./jcr:title=${title}" \
-            --data-urlencode "./data/master/quickstartArticleTitle=${title}" \
-            --data-urlencode "./data/master/quickstartArticleSlug=${slug}" \
-            --data-urlencode "./data/master/quickstartArticleSummary=${summary}" \
-            --data-urlencode "./data/master/quickstartArticleAuthors=${authors}" \
-            --data-urlencode "./data/master/quickstartArticleBody=${markdown}" \
-            --data-urlencode "./data/master/quickstartForkRepoLink=${fork_repo_link}" \
-            -d "./cq:lastModified=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)" \
-            -d "./cq:lastModified@TypeHint=Date")
+            -d "$cf_payload")
           
           http_code=$(echo "$response" | tail -n1)
           if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
@@ -292,16 +295,16 @@ jobs:
           
           sleep 4
           
-          cf_path="${{ steps.copy_cf.outputs.cf_path }}"
-          echo "🔗 Linking page to content fragment: $cf_path"
+          # Get the pre-built page payload from prepare_aem_payload.py
+          page_payload=$(jq -r '.page_payload' aem_payload.json)
+          
+          echo "🔗 Updating page with content fragment reference and tags"
           
           curl -s -X POST \
-            "${AEM_URL}${page_path}/jcr:content" \
+            "${AEM_URL}${page_path}" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
-            --data-urlencode "./jcr:title=${title}" \
-            -d "./cq:template=/conf/snowflake-site/settings/wcm/templates/quickstart-article" \
-            -d "./root/container/quickstart_content_fr/fragmentPath=${cf_path}"
+            -d "$page_payload"
           
           echo "page_path=${page_path}" >> $GITHUB_OUTPUT
           echo "✅ Page created"
