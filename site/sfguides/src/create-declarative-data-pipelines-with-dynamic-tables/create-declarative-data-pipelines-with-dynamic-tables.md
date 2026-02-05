@@ -124,9 +124,6 @@ create or replace dynamic table stg_orders_dt
        purchase:"purchase_date"::date as order_date
    from raw_db.public.orders;
 ```
-
-The JSON unpacking format is: `COLUMN:"VAR_NAME"::TYPE_CAST as NEW_COL_NAME`
-
 ![Unpacking JSON](./assets/UnpackingJSON.png)
 
 
@@ -146,6 +143,8 @@ show dynamic tables;
 ```
 
 The `TARGET_LAG` is set to `DOWNSTREAM`, meaning these tables refresh whenever a downstream table changes.
+
+![target_lag = DOWNSTREAM](./assets/targetlagdownstream.png)
 
 
 ## Chain Dynamic Tables
@@ -193,6 +192,9 @@ To query the new Face Model Dynamic Table, use the folloiwng command to confirm 
 select * from analytics_db.public.fct_customer_orders_dt;
 ```
 
+![Chained Table](./assets/joineddynamictable.png)
+
+
 ### Visualize the Pipeline
 
 1. Navigate to `Database Explorer` > `ANALYTICS_DB` > `PUBLIC` > `Dynamic Tables` > `FCT_CUSTOMER_ORDERS_DT`
@@ -200,6 +202,8 @@ select * from analytics_db.public.fct_customer_orders_dt;
 
 You should see a visual DAG (Directed Acyclic Graph) showing the pipeline flow:
 **Raw Tables → Staging Dynamic Tables → Fact Dynamic Table**
+
+![Visualization of Pipeline](./assets/graph.png)
 
 
 ## Monitor the Pipeline
@@ -234,6 +238,9 @@ Verify the change. Results should have the Dynamic Table's new TARGET_LAG set to
 show dynamic tables;
 ```
 
+![Updated TARGET_LAG](./assets/targetlag.png)
+
+
 ### Monitor Refresh History
 
 To inspect the history of refreshes, showing execution times, data changes, and potential errors:
@@ -244,6 +251,9 @@ select * from table(information_schema.dynamic_table_refresh_history());
 
 This is your built-in observability tool for pipeline monitoring.
 
+![Refresh History](./assets/refreshhistory.png)
+
+
 ### Implement Data Quality
 
 Query the fact table and check for potential issues like null orders:
@@ -253,6 +263,9 @@ select * from analytics_db.public.fct_customer_orders_dt;
 ```
 
 If you see null values for `PRODUCT_ID`, this indicates customers without purchases.
+
+![Nulled PRODUCT_ID](./assets/null.png)
+
 
 Add a data quality filter to remove null orders:
 
@@ -279,10 +292,16 @@ Verify the data quality enforcement:
 select * from analytics_db.public.fct_customer_orders_dt;
 ```
 
+![Filtered nulled PRODUCT_ID](./assets/removednull.png)
+
+
 ### Use Snowsight for Management
 
 1. Navigate to `Database Explorer` > `ANALYTICS_DB` > `PUBLIC` > `Dynamic Tables` > `FCT_CUSTOMER_ORDERS_DT`
 2. Click on "Refresh History" to see a table showing when the Dynamic Table was refreshed and the status of each refresh
+
+![Management view](./assets/management.png)
+
 
 ## Conclusion And Resources
 
