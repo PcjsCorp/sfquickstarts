@@ -585,4 +585,3 @@ jobs:
       AEM_AUTHOR_URL: ${{ secrets.AEM_AUTHOR_URL }}
       AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL }}
 
-# test
