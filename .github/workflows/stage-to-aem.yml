@@ -113,6 +113,7 @@ jobs:
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           dest_folder="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
+          parent_folder="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments"
           
           echo "📁 Checking if destination folder exists: $dest_folder"
           
@@ -121,21 +122,54 @@ jobs:
             -u "${AEM_USERNAME}:${AEM_PASSWORD}")
           
           check_code=$(echo "$check_response" | tail -n1)
+          echo "Check response code: $check_code"
           
           if [ "$check_code" -eq 200 ]; then
             echo "✅ Folder already exists"
           else
             echo "📁 Creating folder: $dest_folder"
             
-            curl -s -X POST \
-              "${AEM_URL}${CF_DEST_PATH}/${{ inputs.language }}/content-fragments" \
+            # Use AEM DAM folder creation API
+            create_response=$(curl -s -w "\n%{http_code}" -X POST \
+              "${AEM_URL}/api/assets${parent_folder#/content/dam}/*" \
               -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
-              -H "Content-Type: application/x-www-form-urlencoded" \
-              -d "./jcr:primaryType=sling:OrderedFolder" \
-              -d ":name=quickstarts"
+              -H "Content-Type: application/json" \
+              -d '{"class":"assetFolder","properties":{"title":"quickstarts"}}')
             
-            sleep 2
-            echo "✅ Folder created"
+            create_code=$(echo "$create_response" | tail -n1)
+            create_body=$(echo "$create_response" | sed '$d')
+            
+            echo "Create response code: $create_code"
+            echo "Create response: $create_body"
+            
+            if [ "$create_code" -lt 200 ] || [ "$create_code" -ge 300 ]; then
+              echo "⚠️ DAM API failed, trying Sling POST..."
+              
+              # Fallback to Sling POST
+              curl -s -X POST \
+                "${AEM_URL}${parent_folder}" \
+                -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
+                -H "Content-Type: application/x-www-form-urlencoded" \
+                -d "./jcr:primaryType=sling:OrderedFolder" \
+                -d "./jcr:title=quickstarts" \
+                -d ":name=quickstarts"
+            fi
+            
+            sleep 3
+            
+            # Verify folder was created
+            verify_response=$(curl -s -w "\n%{http_code}" \
+              "${AEM_URL}${dest_folder}.json" \
+              -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+            
+            verify_code=$(echo "$verify_response" | tail -n1)
+            
+            if [ "$verify_code" -eq 200 ]; then
+              echo "✅ Folder created successfully"
+            else
+              echo "❌ Failed to create folder"
+              exit 1
+            fi
           fi
 
       - name: Copy base content fragment to staging
