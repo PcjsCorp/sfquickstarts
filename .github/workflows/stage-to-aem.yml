@@ -106,6 +106,32 @@ jobs:
           echo "📦 AEM payload prepared:"
           cat aem_payload.json
 
+      - name: Test AEM authentication
+        env:
+          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
+          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+        run: |
+          echo "🔐 Testing AEM authentication..."
+          echo "   URL: ${AEM_URL}"
+          echo "   Username length: ${#AEM_USERNAME}"
+          
+          # Test with verbose output
+          response=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            "${AEM_URL}/content/dam.json" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+          
+          http_code=$(echo "$response" | grep "HTTP_CODE:" | cut -d: -f2)
+          body=$(echo "$response" | grep -v "HTTP_CODE:")
+          
+          echo "   Response code: $http_code"
+          echo "   Response preview: ${body:0:200}"
+          
+          if [ "$http_code" -eq 401 ] || [ "$http_code" -eq 403 ]; then
+            echo "❌ Authentication failed - check AEM_USERNAME and AEM_PASSWORD secrets"
+            exit 1
+          fi
+
       - name: Ensure destination folder hierarchy exists
         env:
           AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
