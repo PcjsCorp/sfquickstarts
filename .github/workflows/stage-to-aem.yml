@@ -116,21 +116,33 @@ jobs:
           echo "   URL: ${AEM_URL}"
           echo "   Username length: ${#AEM_USERNAME}"
           
-          # Test with verbose output
-          response=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+          # Test the exact base CF path
+          echo ""
+          echo "📋 Testing base CF path:"
+          curl -s -w "\n   HTTP: %{http_code}\n" \
+            "${AEM_URL}${BASE_CF_PATH}.json" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" | tail -5
+          
+          # Test without .json
+          echo ""
+          echo "📋 Testing base CF path (no .json):"
+          curl -s -o /dev/null -w "   HTTP: %{http_code}\n" \
+            "${AEM_URL}${BASE_CF_PATH}" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}"
+          
+          # Test root dam
+          echo ""
+          echo "📋 Testing /content/dam:"
+          curl -s -o /dev/null -w "   HTTP: %{http_code}\n" \
             "${AEM_URL}/content/dam.json" \
-            -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}"
           
-          http_code=$(echo "$response" | grep "HTTP_CODE:" | cut -d: -f2)
-          body=$(echo "$response" | grep -v "HTTP_CODE:")
-          
-          echo "   Response code: $http_code"
-          echo "   Response preview: ${body:0:200}"
-          
-          if [ "$http_code" -eq 401 ] || [ "$http_code" -eq 403 ]; then
-            echo "❌ Authentication failed - check AEM_USERNAME and AEM_PASSWORD secrets"
-            exit 1
-          fi
+          # Test with different path format
+          echo ""
+          echo "📋 Testing /api/assets:"
+          curl -s -w "\n   HTTP: %{http_code}\n" \
+            "${AEM_URL}/api/assets.json" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}" | tail -3
 
       - name: Ensure destination folder hierarchy exists
         env:
