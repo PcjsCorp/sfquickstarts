@@ -106,70 +106,62 @@ jobs:
           echo "📦 AEM payload prepared:"
           cat aem_payload.json
 
-      - name: Ensure destination folder exists
+      - name: Ensure destination folder hierarchy exists
         env:
           AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
           AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
-          dest_folder="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
-          parent_folder="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments"
+          # Create each folder in the hierarchy if it doesn't exist
+          # Path: /content/dam/snowflake-site/{lang}/content-fragments/quickstarts
           
-          echo "📁 Checking if destination folder exists: $dest_folder"
+          lang="${{ inputs.language }}"
           
-          check_response=$(curl -s -w "\n%{http_code}" \
-            "${AEM_URL}${dest_folder}.json" \
-            -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+          folders=(
+            "/content/dam/snowflake-site/${lang}"
+            "/content/dam/snowflake-site/${lang}/content-fragments"
+            "/content/dam/snowflake-site/${lang}/content-fragments/quickstarts"
+          )
           
-          check_code=$(echo "$check_response" | tail -n1)
-          echo "Check response code: $check_code"
-          
-          if [ "$check_code" -eq 200 ]; then
-            echo "✅ Folder already exists"
-          else
-            echo "📁 Creating folder: $dest_folder"
+          for folder in "${folders[@]}"; do
+            echo "📁 Checking: $folder"
             
-            # Use AEM DAM folder creation API
-            create_response=$(curl -s -w "\n%{http_code}" -X POST \
-              "${AEM_URL}/api/assets${parent_folder#/content/dam}/*" \
-              -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
-              -H "Content-Type: application/json" \
-              -d '{"class":"assetFolder","properties":{"title":"quickstarts"}}')
+            check_code=$(curl -s -o /dev/null -w "%{http_code}" \
+              "${AEM_URL}${folder}.json" \
+              -u "${AEM_USERNAME}:${AEM_PASSWORD}")
             
-            create_code=$(echo "$create_response" | tail -n1)
-            create_body=$(echo "$create_response" | sed '$d')
-            
-            echo "Create response code: $create_code"
-            echo "Create response: $create_body"
-            
-            if [ "$create_code" -lt 200 ] || [ "$create_code" -ge 300 ]; then
-              echo "⚠️ DAM API failed, trying Sling POST..."
+            if [ "$check_code" -eq 200 ]; then
+              echo "   ✅ Exists"
+            else
+              echo "   📁 Creating..."
+              parent_folder=$(dirname "$folder")
+              folder_name=$(basename "$folder")
               
-              # Fallback to Sling POST
-              curl -s -X POST \
-                "${AEM_URL}${parent_folder}" \
+              # Use Sling POST to create folder
+              create_code=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+                "${AEM_URL}${parent_folder}/" \
                 -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
                 -H "Content-Type: application/x-www-form-urlencoded" \
                 -d "./jcr:primaryType=sling:OrderedFolder" \
-                -d "./jcr:title=quickstarts" \
-                -d ":name=quickstarts"
+                -d "./jcr:title=${folder_name}" \
+                -d ":name=${folder_name}")
+              
+              echo "   Create response: $create_code"
+              sleep 2
             fi
-            
-            sleep 3
-            
-            # Verify folder was created
-            verify_response=$(curl -s -w "\n%{http_code}" \
-              "${AEM_URL}${dest_folder}.json" \
-              -u "${AEM_USERNAME}:${AEM_PASSWORD}")
-            
-            verify_code=$(echo "$verify_response" | tail -n1)
-            
-            if [ "$verify_code" -eq 200 ]; then
-              echo "✅ Folder created successfully"
-            else
-              echo "❌ Failed to create folder"
-              exit 1
-            fi
+          done
+          
+          # Final verification
+          dest_folder="${CF_DEST_PATH}/${lang}/content-fragments/quickstarts"
+          verify_code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${AEM_URL}${dest_folder}.json" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+          
+          if [ "$verify_code" -eq 200 ]; then
+            echo "✅ All folders ready"
+          else
+            echo "❌ Failed to create folder hierarchy"
+            exit 1
           fi
 
       - name: Copy base content fragment to staging
