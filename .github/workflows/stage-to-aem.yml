@@ -391,8 +391,7 @@ jobs:
           AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
-          short_sha=$(echo "${{ inputs.commit_sha }}" | cut -c1-8)
-          page_name="${{ inputs.quickstart_name }}-${short_sha}"
+          page_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
           page_path="/content/snowflake-site/global/${{ inputs.language }}/developers/guides/${page_name}"
           title=$(jq -r '.title' parsed_content.json)
           
@@ -503,7 +502,7 @@ jobs:
             const publishUrl = '${{ secrets.AEM_PUBLISH_URL }}';
             const language = '${{ inputs.language }}';
             const quickstartName = '${{ inputs.quickstart_name }}';
-            const commitSha = '${{ inputs.commit_sha }}'.substring(0, 8);
+            const commitSha = '${{ inputs.commit_sha }}';
             
             const stagingUrl = `${publishUrl}/${language}/developers/guides/${quickstartName}-${commitSha}`;
             
