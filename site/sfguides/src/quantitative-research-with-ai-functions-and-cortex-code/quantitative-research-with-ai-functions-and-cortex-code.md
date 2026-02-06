@@ -3,25 +3,27 @@ language: en
 summary: Build an AI-powered quantitative research pipeline using Cortex Code, Cortex AI Functions, ML Model Registry, and Snowflake Intelligence to transform earnings call transcripts into actionable investment insights.
 categories: snowflake-site:taxonomy/industry/financial-services, snowflake-site:taxonomy/product/ai, snowflake-site:taxonomy/product/analytics, snowflake-site:taxonomy/snowflake-feature/ingestion/conversational-assistants, snowflake-site:taxonomy/snowflake-feature/cortex-llm-functions, snowflake-site:taxonomy/snowflake-feature/cortex-analyst, snowflake-site:taxonomy/snowflake-feature/cortex-search, snowflake-site:taxonomy/snowflake-feature/snowflake-intelligence, snowflake-site:taxonomy/snowflake-feature/marketplace-and-integrations, snowflake-site:taxonomy/snowflake-feature/snowpark, snowflake-site:taxonomy/snowflake-feature/cortex-code
 environments: web
-status: Hidden
+status: Published
 authors: Harry Yu, Serena Zou, Constantin Stanca, Dureti Shemsi
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 fork repo link: https://github.com/Snowflake-Labs/sfguide-quantitative-research-aisql-cortex
 
-# Quantitative Research with AI Functions and Cortex Code using Snowflake Public Data
+# Quantitative Research with Cortex Code and AI Functions using Snowflake Public Data
 
 ## Overview: Driving Alpha and Efficiency with Native AI
 
 This guide demonstrates how to build an end-to-end AI-powered quantitative research pipeline using Snowflake's native AI capabilities—with **Cortex Code** as your AI coding assistant throughout the journey.
 
-Financial analysts spend countless hours manually reviewing earnings call transcripts to gauge market sentiment and identify investment opportunities. This guide automates and scales that process while showing you how to use **Cortex Code** to build, understand, and extend the solution through natural language conversation.
+Financial analysts spend countless hours manually reviewing earnings call transcripts to gauge market sentiment and identify investment opportunities. This guide shows you how to **systematically process unstructured earnings transcript data using AI Functions**, automating sentiment extraction at scale while using **Cortex Code** to build, understand, and extend the solution through natural language conversation.
 
 By leveraging Snowflake, you are building your AI solutions directly where your data resides—pushing application compute to the data, not data to the application. This eliminates the security risks, governance headaches, and latency associated with moving sensitive financial data to external environments. This entire solution is built seamlessly within the Snowflake Data Cloud, ensuring the highest standards of enterprise security, governance (RBAC), and ease of use.
 
 This guide uses publicly available earnings call data from Dow Jones 30 companies (via Snowflake Marketplace) to show you how to:
-- Extract consistent sentiment at scale with Cortex AI Functions.
+- **Systematically extract consistent sentiment from unstructured earnings transcripts at scale with Cortex AI Functions**.
 - Build and deploy predictive Machine Learning (ML) models in minutes with the conversational power of Cortex Code.
 - Create an intelligent, unified conversational agent accessible through Snowflake Intelligence.
+
+**Snowflake Marketplace for Financial Data**: Beyond the public earnings data used in this guide, Snowflake Marketplace offers a vast ecosystem of additional financial datasets—market data, fundamental data, alternative data, and more—that customers can discover and seamlessly integrate into their AI-native analytical workflows for broader financial analysis.
 
 ## Architecture
 
@@ -59,7 +61,9 @@ This guide leverages Snowflake's native AI features to create a seamless, end-to
 
 ## Key Features
 
-**AI-Powered Sentiment Extraction**: Use Cortex AI Functions's `AI_COMPLETE()` function with Claude (`claude-4-sonnet`) to analyze earnings call transcripts and extract structured sentiment scores (1-10 scale), analyst participation counts, and human-readable reasoning—all from unstructured text.
+**Earnings Transcript Analysis with AI Functions**: Use Cortex AI Functions's `AI_COMPLETE()` function with Claude (`claude-4-sonnet`) to systematically process unstructured earnings call transcripts and extract structured sentiment scores (1-10 scale), analyst participation counts, and human-readable reasoning—transforming thousands of pages of text into actionable intelligence.
+
+**AI-Native Workflow for Unstructured Financial Data**: Demonstrate how AI Functions enable systematic processing of unstructured data at scale—a major capability for hedge funds and asset managers dealing with earnings calls, analyst reports, SEC filings, and other text-heavy financial documents.
 
 **Momentum-Based ML Predictions**: Train LightGBM models on technical momentum features using walk-forward quarterly validation, then register them in Snowflake's ML Model Registry for production inference.
 
