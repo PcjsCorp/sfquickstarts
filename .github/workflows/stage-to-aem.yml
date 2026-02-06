@@ -92,10 +92,12 @@ jobs:
       - name: Prepare AEM payload
         id: prepare_payload
         env:
-          CF_NAME: "${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
           LANGUAGE: ${{ inputs.language }}
         run: |
-          cf_path="${CF_DEST_PATH}/${LANGUAGE}/content-fragments/quickstarts/${CF_NAME}"
+          # Use shortened commit SHA (first 8 chars) - must match copy step
+          short_sha=$(echo "${{ inputs.commit_sha }}" | cut -c1-8)
+          cf_name="${{ inputs.quickstart_name }}-${short_sha}"
+          cf_path="${CF_DEST_PATH}/${LANGUAGE}/content-fragments/quickstarts/${cf_name}"
           
           python3 scripts/aem-staging/prepare_aem_payload.py \
             parsed_content.json \
@@ -225,11 +227,15 @@ jobs:
           AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
-          cf_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
+          # Use shortened commit SHA (first 8 chars) to avoid path length issues
+          short_sha=$(echo "${{ inputs.commit_sha }}" | cut -c1-8)
+          cf_name="${{ inputs.quickstart_name }}-${short_sha}"
           dest_path="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
           
           echo "📋 Copying base CF to: $dest_path/$cf_name"
+          echo "   Name length: ${#cf_name}"
           
+          # Try using AEM Assets API for copy
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${BASE_CF_PATH}" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
@@ -243,7 +249,32 @@ jobs:
           body=$(echo "$response" | sed '$d')
           
           echo "HTTP Status: $http_code"
-          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+          
+          if [ "$http_code" -eq 500 ]; then
+            echo "⚠️ 500 error - checking AEM error.log hint..."
+            echo "Response: $body"
+            echo ""
+            echo "Trying alternative copy method..."
+            
+            # Alternative: Use wcmcommand
+            alt_response=$(curl -s -w "\n%{http_code}" -X POST \
+              "${AEM_URL}/bin/wcmcommand" \
+              -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              -d "cmd=copyPage" \
+              -d "srcPath=${BASE_CF_PATH}" \
+              -d "destParentPath=${dest_path}" \
+              -d "destName=${cf_name}")
+            
+            alt_code=$(echo "$alt_response" | tail -n1)
+            echo "Alternative method HTTP: $alt_code"
+            
+            if [ "$alt_code" -lt 200 ] || [ "$alt_code" -ge 300 ]; then
+              echo "❌ Both copy methods failed"
+              echo "$alt_response" | sed '$d'
+              exit 1
+            fi
+          elif [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
             echo "❌ Failed to copy content fragment"
             echo "$body"
             exit 1
@@ -386,7 +417,9 @@ jobs:
           AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
-          page_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
+          # Use shortened commit SHA (first 8 chars) - must match copy step
+          short_sha=$(echo "${{ inputs.commit_sha }}" | cut -c1-8)
+          page_name="${{ inputs.quickstart_name }}-${short_sha}"
           page_path="/content/snowflake-site/global/${{ inputs.language }}/developers/guides/${page_name}"
           title=$(jq -r '.title' parsed_content.json)
           
@@ -450,7 +483,7 @@ jobs:
             const publishUrl = '${{ secrets.AEM_PUBLISH_URL }}';
             const language = '${{ inputs.language }}';
             const quickstartName = '${{ inputs.quickstart_name }}';
-            const commitSha = '${{ inputs.commit_sha }}';
+            const commitSha = '${{ inputs.commit_sha }}'.substring(0, 8);
             
             const stagingUrl = `${publishUrl}/${language}/developers/guides/${quickstartName}-${commitSha}`;
             
