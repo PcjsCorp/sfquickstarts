@@ -227,61 +227,35 @@ jobs:
           AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
           AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
-          # Use shortened commit SHA (first 8 chars) to avoid path length issues
-          short_sha=$(echo "${{ inputs.commit_sha }}" | cut -c1-8)
-          cf_name="${{ inputs.quickstart_name }}-${short_sha}"
+          cf_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
           dest_path="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
           
           echo "📋 Copying base CF to: $dest_path/$cf_name"
-          echo "   Name length: ${#cf_name}"
           
-          # Try using AEM Assets API for copy
+          # Use AEM Assets HTTP API - POST to source with copy operation
+          # This mimics Workato's copy_folder_asset action
           response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${BASE_CF_PATH}" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d ":operation=copy" \
             -d ":dest=${dest_path}/${cf_name}" \
-            -d ":applyTo=recursive" \
-            -d ":replace=true")
+            -d ":replace=true" \
+            -d "depth=infinity")
           
           http_code=$(echo "$response" | tail -n1)
           body=$(echo "$response" | sed '$d')
-          
           echo "HTTP Status: $http_code"
+          echo "Response: $body"
           
-          if [ "$http_code" -eq 500 ]; then
-            echo "⚠️ 500 error - checking AEM error.log hint..."
-            echo "Response: $body"
-            echo ""
-            echo "Trying alternative copy method..."
-            
-            # Alternative: Use wcmcommand
-            alt_response=$(curl -s -w "\n%{http_code}" -X POST \
-              "${AEM_URL}/bin/wcmcommand" \
-              -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
-              -H "Content-Type: application/x-www-form-urlencoded" \
-              -d "cmd=copyPage" \
-              -d "srcPath=${BASE_CF_PATH}" \
-              -d "destParentPath=${dest_path}" \
-              -d "destName=${cf_name}")
-            
-            alt_code=$(echo "$alt_response" | tail -n1)
-            echo "Alternative method HTTP: $alt_code"
-            
-            if [ "$alt_code" -lt 200 ] || [ "$alt_code" -ge 300 ]; then
-              echo "❌ Both copy methods failed"
-              echo "$alt_response" | sed '$d'
-              exit 1
-            fi
-          elif [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
-            echo "❌ Failed to copy content fragment"
-            echo "$body"
-            exit 1
+          if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
+            echo "✅ Content fragment copied"
+            echo "cf_path=${dest_path}/${cf_name}" >> $GITHUB_OUTPUT
+            exit 0
           fi
           
-          echo "cf_path=${dest_path}/${cf_name}" >> $GITHUB_OUTPUT
-          echo "✅ Content fragment created"
+          echo "❌ Copy failed"
+          exit 1
 
       - name: Wait for AEM processing
         run: sleep 3
