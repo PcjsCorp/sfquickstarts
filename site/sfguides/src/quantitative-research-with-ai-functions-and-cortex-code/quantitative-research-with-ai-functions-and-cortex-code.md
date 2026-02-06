@@ -10,7 +10,7 @@ fork repo link: https://github.com/Snowflake-Labs/sfguide-quantitative-research-
 
 # Quantitative Research with Cortex Code and AI Functions using Snowflake Public Data
 
-## Overview: 
+## Overview 
 
 ### Driving Alpha and Efficiency with Native AI
 
