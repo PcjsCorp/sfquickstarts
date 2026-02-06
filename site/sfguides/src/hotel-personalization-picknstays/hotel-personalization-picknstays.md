@@ -58,6 +58,24 @@ The platform implements a modern **Medallion Architecture** across Snowflake:
 
 > Industry benchmarks compiled from Cornell Center for Hospitality Research, HSMAI, AHLA, McKinsey, Accenture, and Forrester Research studies. Actual results vary by portfolio size, data quality, and implementation approach.
 
+## Snowflake Features & Technologies
+
+This solution leverages the following Snowflake platform capabilities:
+
+**Data Engineering**: Medallion Architecture (Bronze, Silver, Gold layers) for structured data transformation, data quality enrichment, and pre-aggregated analytics tables for sub-second query performance.
+
+**Streamlit in Snowflake**: Native application framework delivering three executive dashboards (Portfolio Overview, Loyalty Intelligence, CX & Service Signals) with no external BI tools required. Fully integrated with Snowpark for data access.
+
+**Snowflake Intelligence**: Conversational AI platform enabling natural language queries across all portfolio data through the Hotel Intelligence Master Agent with 48+ pre-configured business questions.
+
+**Cortex Analyst**: Text-to-SQL conversion layer with 9 semantic views providing natural language access to portfolio metrics, loyalty segments, guest sentiment, VIP arrivals, preferences, and service intelligence.
+
+**Cortex Agents**: Five specialized AI agents for domain-specific analysis (Guest Analytics, Personalization, Amenities Intelligence, Experience Optimizer) plus the Hotel Intelligence Master Agent orchestrating comprehensive strategic analysis across all 9 semantic views.
+
+**Snowpark ML**: Machine learning framework for churn risk scoring, guest propensity modeling, and predictive analytics on guest behavior patterns.
+
+**Snowflake Cortex AI**: Built-in AI functions for sentiment analysis, text classification, and natural language processing on guest reviews and service feedback.
+
 ## Technical Capabilities
 
 **Portfolio Overview Dashboard**: Real-time portfolio health monitoring with 5 executive KPIs (Occupancy %, ADR, RevPAR, Repeat Stay Rate, Guest Satisfaction), performance visualizations by brand and region, 30-day trend analysis, experience health heatmap, and prioritized outliers & exceptions table with color-coded indicators.
