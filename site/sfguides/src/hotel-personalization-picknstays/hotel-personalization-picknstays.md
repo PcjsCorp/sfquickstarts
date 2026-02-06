@@ -90,8 +90,6 @@ This solution leverages the following Snowflake platform capabilities:
 
 ![CX & Service Signals](assets/cx_service_signals_dashboard.png)
 
-**Snowflake Intelligence Agents**: Natural language queries across structured and unstructured data via Hotel Intelligence Master Agent. 9 semantic views optimized for Cortex Analyst text-to-SQL conversion including portfolio, loyalty, CX, guest sentiment, arrivals, preferences, analytics, personalization, and amenities.
-
 ## Key Differentiators
 
 **Executive-Optimized KPIs**: Self-explanatory metrics with industry benchmarks and tooltips requiring zero training. Dashboard-native guidance for interpretation and action thresholds.
