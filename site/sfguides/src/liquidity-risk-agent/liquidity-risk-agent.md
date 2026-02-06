@@ -6,6 +6,7 @@ environments: web
 status: Published
 authors: Nick Windridge, Suraj Rajan, Constantin Stanca, Cameron Shimmin
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
+fork repo link: https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent
 
 # Liquidity Risk Agent: AI-Powered LCR Forecasting with Snowflake
 
@@ -115,3 +116,11 @@ The natural language agent can answer questions like:
 - "Compare baseline LCR with what-if scenario 1"
 - "What's LCR today and headroom vs floor?"
 - "Why did LCR move? What are top 3 causes?"
+
+## Quick Start
+
+Get started immediately with the complete solution code and setup instructions:
+
+**GitHub Repository**: [https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent](https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent)
+
+Clone the repository and follow the README to deploy the full solution in your Snowflake account.
