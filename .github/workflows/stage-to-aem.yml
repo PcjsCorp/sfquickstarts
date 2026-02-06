@@ -430,13 +430,22 @@ jobs:
           fi
           
           echo "✅ Page copied successfully"
-          sleep 4
+          
+          # Wait for AEM to fully process the copy
+          echo "   Waiting for AEM to process copy..."
+          sleep 8
           
           # Verify page was created
           page_check=$(curl -s -o /dev/null -w "%{http_code}" \
             "${AEM_URL}${page_path}.json" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}")
           echo "   New page check: HTTP $page_check"
+          
+          # Check jcr:content node exists
+          jcr_check=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${AEM_URL}${page_path}/jcr:content.json" \
+            -u "${AEM_USERNAME}:${AEM_PASSWORD}")
+          echo "   jcr:content check: HTTP $jcr_check"
           
           if [ "$page_check" != "200" ]; then
             echo "⚠️ Warning: Page may not have been created properly"
@@ -449,7 +458,7 @@ jobs:
           echo "   Payload: ${page_payload:0:200}..."
           
           update_response=$(curl -s -w "\n%{http_code}" -X POST \
-            "${AEM_URL}${page_path}/jcr:content" \
+            "${AEM_URL}${page_path}" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
             -d "$page_payload")
