@@ -12,7 +12,6 @@ fork repo link: https://github.com/Snowflake-Labs/sfguide-getting-started-with-h
 # Getting Started with Horizon for Data Governance in Snowflake
 <!-- ------------------------ -->
 ## Overview 
-Duration: 5
 
 Snowflake Horizon is a built-in suite of compliance, security, privacy, interoperability, and access features that help you easily find, understand, and trust your data. In this hands-on lab, you'll learn how Horizon enables confident, data-driven decisions while maintaining observability and security of your data assets—including AI-powered analytics.
 
@@ -73,7 +72,7 @@ This lab showcases how Snowflake's AI capabilities enhance governance:
 - [Data Governor Admin Persona](https://youtu.be/doView4YqUI?si=tQd_KP7YzIIvogla)
 <!-- ------------------------ -->
 ## Setup
-Duration: 10
+
 
 > **Source of Truth**: The full SQL scripts for this lab are maintained in the [GitHub repository](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake). The repo is the canonical source for execution. This guide provides additional explanatory context and highlights key concepts and some of the SQL has been simplified for illusration purposes.
 
@@ -106,7 +105,7 @@ The setup script demonstrates Snowflake's **Role-Based Access Control (RBAC)**:
 <!-- ------------------------ -->
 
 ## Data Quality Monitoring
-Duration: 15
+
 
 **Script**: [1-DataEngineer.sql](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake/blob/main/hol-lab/1-DataEngineer.sql)
 
@@ -164,7 +163,7 @@ AS
 <!-- ------------------------ -->
 
 ## Know and Protect Your Data
-Duration: 25
+
 
 **Script**: [2-DataGovernor_DataUser.sql](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake/blob/main/hol-lab/2-DataGovernor_DataUser.sql)
 
@@ -302,7 +301,7 @@ CREATE OR REPLACE PROJECTION POLICY HRZN_DB.TAG_SCHEMA.projection_policy
 <!-- ------------------------ -->
 
 ## Access and Audit
-Duration: 10
+
 
 **Script**: [3-Data-governor-Admin.sql](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake/blob/main/hol-lab/3-Data-governor-Admin.sql)
 
@@ -353,7 +352,7 @@ The script includes queries for:
 
 <!-- ------------------------ -->
 ## Semantic Views for AI Analytics
-Duration: 20
+
 
 **Script**: [4-Semantic-View-Governance.sql](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake/blob/main/hol-lab/4-Semantic-View-Governance.sql)
 
@@ -396,7 +395,7 @@ Cortex Analyst automatically generates and executes SQL against your semantic vi
 <!-- ------------------------ -->
 
 ## AI_REDACT for Unstructured PII
-Duration: 15
+
 
 **Script**: [5-Cortex-AI-Redact.sql](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake/blob/main/hol-lab/5-Cortex-AI-Redact.sql)
 
@@ -486,7 +485,7 @@ LIMIT 100;
 <!-- ------------------------ -->
 
 ## Natural Language Governance Queries
-Duration: 10
+
 
 **Script**: [6-Natural-Language-Governance.sql](https://github.com/Snowflake-Labs/sfguide-getting-started-with-horizon-data-governance-in-snowflake/blob/main/hol-lab/6-Natural-Language-Governance.sql)
 
@@ -506,7 +505,7 @@ In Snowsight, use the natural language interface to ask questions like:
 <!-- ------------------------ -->
 
 ## Conclusion And Resources
-Duration: 2
+
 
 Congratulations! You've completed the Horizon Data Governance lab covering:
 
