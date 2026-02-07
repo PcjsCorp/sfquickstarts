@@ -156,7 +156,15 @@ def parse_markdown(
     )
     
     qid = frontmatter.get('id', quickstart_name)
-    title = frontmatter.get('title', qid)
+    title = frontmatter.get('title', '')
+    
+    if not title:
+        h1_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+        if h1_match:
+            title = h1_match.group(1).strip()
+    
+    if not title:
+        title = qid
     summary = frontmatter.get('summary', frontmatter.get('description', ''))
     language = frontmatter.get('language', 'en').lower()
     status = frontmatter.get('status', 'Published')
