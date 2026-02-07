@@ -94,9 +94,7 @@ jobs:
         env:
           LANGUAGE: ${{ inputs.language }}
         run: |
-          # Use shortened commit SHA (first 8 chars) - must match copy step
-          short_sha=$(echo "${{ inputs.commit_sha }}" | cut -c1-8)
-          cf_name="${{ inputs.quickstart_name }}-${short_sha}"
+          cf_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
           cf_path="${CF_DEST_PATH}/${LANGUAGE}/content-fragments/quickstarts/${cf_name}"
           
           python3 scripts/aem-staging/prepare_aem_payload.py \
