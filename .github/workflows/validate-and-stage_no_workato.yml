@@ -483,24 +483,48 @@ jobs:
         id: validation_check
         if: steps.check_relevant.outputs.has_relevant_changes == 'true' && always()
         run: |
-          # Check if any validation step failed
+          # Check each validation step and report which ones failed
           all_passed=true
-          if [ "${{ steps.check_renamed_folders.outcome }}" == "failure" ] || \
-             [ "${{ steps.validate_single_markdown.outcome }}" == "failure" ] || \
-             [ "${{ steps.check_large_files.outcome }}" == "failure" ] || \
-             [ "${{ steps.validate_categories.outcome }}" == "failure" ] || \
-             [ "${{ steps.validate_frontmatter.outcome }}" == "failure" ] || \
-             [ "${{ steps.validate_language.outcome }}" == "failure" ]; then
+          failed_checks=""
+          
+          if [ "${{ steps.check_renamed_folders.outcome }}" == "failure" ]; then
+            failed_checks="${failed_checks}\n  - ❌ Renamed folders check"
+            all_passed=false
+          fi
+          if [ "${{ steps.validate_single_markdown.outcome }}" == "failure" ]; then
+            failed_checks="${failed_checks}\n  - ❌ Single markdown file per folder"
+            all_passed=false
+          fi
+          if [ "${{ steps.check_large_files.outcome }}" == "failure" ]; then
+            failed_checks="${failed_checks}\n  - ❌ Large files check (>1MB)"
+            all_passed=false
+          fi
+          if [ "${{ steps.validate_categories.outcome }}" == "failure" ]; then
+            failed_checks="${failed_checks}\n  - ❌ Categories syntax validation"
+            all_passed=false
+          fi
+          if [ "${{ steps.validate_frontmatter.outcome }}" == "failure" ]; then
+            failed_checks="${failed_checks}\n  - ❌ Frontmatter validation (id must match folder name)"
+            all_passed=false
+          fi
+          if [ "${{ steps.validate_language.outcome }}" == "failure" ]; then
+            failed_checks="${failed_checks}\n  - ❌ Language validation (allowed: en, es, it, fr, de, ja, ko, pt_br)"
             all_passed=false
           fi
           
           # Set output for matrix job to use
           echo "all_passed=$all_passed" >> $GITHUB_OUTPUT
-          echo "All validations passed: $all_passed"
           
-          # Fail workflow if validations failed
-          if [ "$all_passed" == "false" ]; then
-            echo "❌ Validation failed. See PR comment for details."
+          if [ "$all_passed" == "true" ]; then
+            echo "✅ All validations passed"
+          else
+            echo ""
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "VALIDATION FAILURES:"
+            echo -e "$failed_checks"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo ""
+            echo "See PR comment for detailed error messages."
             exit 1
           fi
 
