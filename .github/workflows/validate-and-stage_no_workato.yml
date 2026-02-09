@@ -490,26 +490,57 @@ jobs:
           if [ "${{ steps.check_renamed_folders.outcome }}" == "failure" ]; then
             failed_checks="${failed_checks}\n  - ❌ Renamed folders check"
             all_passed=false
+            if [ -f folder-rename-error.json ]; then
+              echo "::group::Renamed folders error details"
+              cat folder-rename-error.json | jq -r '.message // "See error file"'
+              echo "::endgroup::"
+            fi
           fi
           if [ "${{ steps.validate_single_markdown.outcome }}" == "failure" ]; then
             failed_checks="${failed_checks}\n  - ❌ Single markdown file per folder"
             all_passed=false
+            if [ -f multiple-md-error.json ]; then
+              echo "::group::Multiple markdown files error"
+              cat multiple-md-error.json | jq -r '.message // "See error file"'
+              cat multiple-md-error.json | jq -r '.errors[]? | "  File: \(.folder) - \(.files | join(", "))"'
+              echo "::endgroup::"
+            fi
           fi
           if [ "${{ steps.check_large_files.outcome }}" == "failure" ]; then
             failed_checks="${failed_checks}\n  - ❌ Large files check (>1MB)"
             all_passed=false
+            if [ -f large_files.json ]; then
+              echo "::group::Large files"
+              cat large_files.json | jq -r '.[]'
+              echo "::endgroup::"
+            fi
           fi
           if [ "${{ steps.validate_categories.outcome }}" == "failure" ]; then
             failed_checks="${failed_checks}\n  - ❌ Categories syntax validation"
             all_passed=false
+            if [ -f categories-error.json ]; then
+              echo "::group::Categories error details"
+              cat categories-error.json | jq -r '.issues[]? | "  File: \(.file)\n  Error: \(.error // .message // "Invalid categories")"'
+              echo "::endgroup::"
+            fi
           fi
           if [ "${{ steps.validate_frontmatter.outcome }}" == "failure" ]; then
             failed_checks="${failed_checks}\n  - ❌ Frontmatter validation (id must match folder name)"
             all_passed=false
+            if [ -f frontmatter-error.json ]; then
+              echo "::group::Frontmatter error details"
+              cat frontmatter-error.json | jq -r '.issues[]? | "  File: \(.file)\n  Error: \(.error // .message // "Invalid frontmatter")"'
+              echo "::endgroup::"
+            fi
           fi
           if [ "${{ steps.validate_language.outcome }}" == "failure" ]; then
             failed_checks="${failed_checks}\n  - ❌ Language validation (allowed: en, es, it, fr, de, ja, ko, pt_br)"
             all_passed=false
+            if [ -f validation-error.json ]; then
+              echo "::group::Language error details"
+              cat validation-error.json | jq -r '.files[]? | "  File: \(.file)\n  Found: \(.language | if . == "" then "(missing)" else . end)"'
+              echo "::endgroup::"
+            fi
           fi
           
           # Set output for matrix job to use
