@@ -1,6 +1,10 @@
-Test file without Markdown
+---
+id: test-repo-demo
+language: en
+categories: snowflake-site:taxonomy/...
+summary: Your summary here
+---
 
---
-Just text
-No formatting
+# Your Title
 
+Content here...
