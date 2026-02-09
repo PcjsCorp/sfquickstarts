@@ -1,7 +1,7 @@
 ---
 id: test-repo-demo
 language: en
-categories: snowflake-site:taxonomy/...
+categories: snowflake-site:taxonomy/snowflake-feature/test-repo-demo,
 summary: Your summary here
 ---
 
