@@ -42,6 +42,11 @@ env:
 jobs:
   stage_quickstart:
     runs-on: ubuntu-latest
+    env:
+      AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
+      AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
+      AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
+      AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -107,10 +112,6 @@ jobs:
           cat aem_payload.json
 
       - name: Test AEM authentication
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           echo "🔐 Testing AEM authentication..."
           echo "   URL: ${AEM_URL}"
@@ -145,10 +146,6 @@ jobs:
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" | tail -3
 
       - name: Ensure destination folder hierarchy exists
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           lang="${{ inputs.language }}"
           
@@ -220,10 +217,6 @@ jobs:
 
       - name: Copy base content fragment to staging
         id: copy_cf
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           cf_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
           dest_path="${CF_DEST_PATH}/${{ inputs.language }}/content-fragments/quickstarts"
@@ -259,10 +252,6 @@ jobs:
         run: sleep 3
 
       - name: Update content fragment with parsed content
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           cf_path="${{ steps.copy_cf.outputs.cf_path }}"
           
@@ -288,10 +277,6 @@ jobs:
           echo "✅ Content fragment updated"
 
       - name: Collect and upload images
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           assets_dir="site/sfguides/src/${{ inputs.quickstart_name }}/assets"
           dam_folder="${DAM_GUIDES_PATH}/${{ inputs.quickstart_name }}"
@@ -364,10 +349,6 @@ jobs:
         run: sleep 15
 
       - name: Publish content fragment
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           cf_path="${{ steps.copy_cf.outputs.cf_path }}"
           
@@ -384,10 +365,6 @@ jobs:
 
       - name: Create staging page from base
         id: create_page
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           page_name="${{ inputs.quickstart_name }}-${{ inputs.commit_sha }}"
           page_path="/content/snowflake-site/global/${{ inputs.language }}/developers/guides/${page_name}"
@@ -475,10 +452,6 @@ jobs:
         run: sleep 60
 
       - name: Publish staging page
-        env:
-          AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-          AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-          AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
         run: |
           page_path="${{ steps.create_page.outputs.page_path }}"
           
@@ -495,9 +468,11 @@ jobs:
 
       - name: Comment PR with staging URL
         uses: actions/github-script@v7
+        env:
+          PUBLISH_URL: ${{ env.AEM_PUBLISH_URL }}
         with:
           script: |
-            const publishUrl = '${{ secrets.AEM_PUBLISH_URL }}';
+            const publishUrl = process.env.PUBLISH_URL;
             const language = '${{ inputs.language }}';
             const quickstartName = '${{ inputs.quickstart_name }}';
             const commitSha = '${{ inputs.commit_sha }}';
