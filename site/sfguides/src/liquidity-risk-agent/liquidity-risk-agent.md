@@ -117,10 +117,12 @@ The natural language agent can answer questions like:
 - "What's LCR today and headroom vs floor?"
 - "Why did LCR move? What are top 3 causes?"
 
-## Quick Start
+## Getting Started
 
-Get started immediately with the complete solution code and setup instructions:
+**Repository**: [https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent](https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent)
 
-**GitHub Repository**: [https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent](https://github.com/Snowflake-Labs/sfguide-liquidity-risk-agent)
-
-Clone the repository and follow the README to deploy the full solution in your Snowflake account.
+1. Clone the repo and open `scripts/setup.sql` in Snowsight
+2. Run **Sections 1-9** to create roles, warehouses, database, stages, and sample data
+3. Upload files from `notebooks/` and `streamlit/` folders to their respective stages (use Section 10 PUT commands)
+4. Run **Sections 11-13** to create notebooks, Streamlit app, and semantic view
+5. Open `LIQUIDITY_STREAMLIT` in Snowsight and run the `LIQUIDITY_FORECAST` notebook to generate LCR data
