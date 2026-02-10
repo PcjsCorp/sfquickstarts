@@ -91,7 +91,7 @@ In the following steps, you will prepare a Snowflake environment that will be us
 
 This setup allows you to explore how Mendix and Snowflake work together by executing SQL statements through the Snowflake REST SQL Connector.
 
-Run the following SQL statements in a Snowflake worksheet to create the required database objects and insert sample data:
+Run the following SQL statements in a Snowflake worksheet using a role with sufficient permissions to create databases, schemas, and tables, and an active warehouse selected to create the required database objects and insert sample data:
 
 ```sql
 CREATE OR REPLACE DATABASE DATABASE_QuickStart;
