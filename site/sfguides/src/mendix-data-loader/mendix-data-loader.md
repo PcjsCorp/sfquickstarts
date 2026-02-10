@@ -81,9 +81,9 @@ Follow the steps below to deploy a sample Mendix application that will be used l
 
     ![Deploying your Mendix application](assets/publish.png)
 
-5. After you see the **Your application is published** notification, click **View App** to see the login screen for your Mendix application.
-6. Optional: To log into your Mendix application and learn more about the Mendix platform in combination with Snowflake implementations, use the username `MxAdmin` and the password `1`.
-7. Save the endpoint of your Mendix application. You'll need it later.
+6. After you see the **Your application is published** notification, click **View App** to see the login screen for your Mendix application.
+7. Optional: To log into your Mendix application and learn more about the Mendix platform in combination with Snowflake implementations, use the username `MxAdmin` and the password `1`.
+8. Save the endpoint of your Mendix application. You'll need it later.
   
     - For example, if your endpoint is `https://sfshowcase101-sandbox.mxapps.io/login.html?profile=Responsive`, save the following value: `https://sfshowcase101-sandbox.mxapps.io/`.
 
@@ -154,7 +154,7 @@ Generate the script and run it in a worksheet with enough permissions to finaliz
 
 The final step before data ingestion is to configure the staging area. The staging area consists of a target database and target schema where data will temporarily reside before you transport/process it into a database owned by your organization.
 
-Navigate to the **Ingestion Configuration** tab ands click the **Create** button to setup where in the database you want to set up the staging area.
+Navigate to the **Ingestion Configuration** tab and click the **Create** button to setup where in the database you want to set up the staging area.
 
 - **Target database name**: For example, `MOVIE_DB`
 - **Target schema name**: For example, `MOVIE_APP`
