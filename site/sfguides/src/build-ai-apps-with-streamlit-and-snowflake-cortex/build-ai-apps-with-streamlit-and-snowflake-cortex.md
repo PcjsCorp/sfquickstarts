@@ -440,6 +440,9 @@ if st.button("Generate Post"):
     with st.container(border=True):
         st.subheader(":material/output: Generated post:")
         st.markdown(response)
+
+st.divider()
+st.caption("Day 7: Theming & Layout | 30 Days of AI with Streamlit")
 ```
 
 The final app features a sidebar for controls and a bordered container for the generated output:
