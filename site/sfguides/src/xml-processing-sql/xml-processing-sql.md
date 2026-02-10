@@ -1,7 +1,7 @@
-author: Constantin Stanca
+author: Constantin Stanca Test
 id: xml-processing-sql
 categories: snowflake-site:taxonomy/solution-center/certification/quickstart, snowflake-site:taxonomy/industry/financial-services, snowflake-site:taxonomy/product/platform
-language: en
+language: fr
 summary: Snowflake guide on how to process XML with SQL 
 environments: web
 status: Published 

@@ -7,9 +7,10 @@ environments: web
 status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 
+# IPO Research
 # IPO Research Assistant with Cortex AI 
 <!-- ------------------------ -->
-## Overview 
+## Overview Test
 
 This Quickstart guide will walk you through creating IPO research agent leveraging key Snowflake Cortex capabilities.  In this Quickstart, you will perform/create the following:
 
