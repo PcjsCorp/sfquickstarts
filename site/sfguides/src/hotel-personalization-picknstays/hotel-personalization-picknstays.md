@@ -10,7 +10,7 @@ tags: Cortex AI, Snowflake Intelligence, Cortex Analyst, Cortex Search, Snowpark
 fork repo link: https://github.com/Snowflake-Labs/sfguide-hotel-personalization-picknstays
 
 
-# Hotel Personalization Pick N Stays
+# Hotel Personalization Pick'N Stays
 
 ## Overview
 
