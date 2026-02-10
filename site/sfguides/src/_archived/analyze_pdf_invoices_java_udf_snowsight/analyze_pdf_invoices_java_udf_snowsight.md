@@ -16,7 +16,7 @@ This Quickstart is designed to help you understand the capabilities included in 
 
 ### Prerequisites
 - Completion of [Getting Started with Unstructured Data](/en/developers/guides/getting-started-with-unstructured-data/)
-- Test GH Wokrflow
+- Test GH Wokrflow 22
 
 ### What You'll Need
 - Snowflake account

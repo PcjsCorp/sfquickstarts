@@ -8,7 +8,7 @@ status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 
 # Zero to Snowflake
-# Test content
+# Test content2
 
 ## Overview
 
@@ -23,6 +23,8 @@ We'll apply these concepts using a sample dataset from our fictitious food truck
 ### Who is Tasty Bytes?
 
 ![./assets/whoistb.png](./assets/whoistb.png)
+
+## Test Content
 ![./assets/si_header.png](./assets/si_header.png)
 
 Our mission is to provide unique, high-quality food options in a convenient and cost-effective manner, emphasizing the use of fresh ingredients from local vendors. Their vision is to become the largest food truck network in the world with a zero carbon footprint.

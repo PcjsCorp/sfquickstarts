@@ -1,4 +1,5 @@
 ---
+author: Serhiy Topchiy
 id: test-repo-demo
 language: en
 categories: snowflake-site:taxonomy/snowflake-feature/test-repo-demo,
@@ -9,3 +10,4 @@ summary: Your summary here
 
 Content here...
 Test content
+Test content 2.0
