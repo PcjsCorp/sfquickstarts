@@ -255,8 +255,8 @@ jobs:
         run: |
           cf_path="${{ steps.copy_cf.outputs.cf_path }}"
           
-          # Get the pre-built URL-encoded payload from prepare_aem_payload.py
-          cf_payload=$(jq -r '.content_fragment_payload' aem_payload.json)
+          # Write payload to file to avoid "Argument list too long" error for large content
+          jq -r '.content_fragment_payload' aem_payload.json > cf_payload.txt
           
           echo "📝 Updating content fragment: $cf_path"
           echo "   Title: $(jq -r '.title' parsed_content.json)"
@@ -266,7 +266,7 @@ jobs:
             "${AEM_URL}${cf_path}/jcr:content" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "$cf_payload")
+            --data-binary @cf_payload.txt)
           
           http_code=$(echo "$response" | tail -n1)
           if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
@@ -425,17 +425,17 @@ jobs:
             echo "⚠️ Warning: Page may not have been created properly"
           fi
           
-          # Get the pre-built page payload from prepare_aem_payload.py
-          page_payload=$(jq -r '.page_payload' aem_payload.json)
+          # Write page payload to file to avoid potential "Argument list too long" error
+          jq -r '.page_payload' aem_payload.json > page_payload.txt
           
           echo "🔗 Updating page with content fragment reference and tags"
-          echo "   Payload: ${page_payload:0:200}..."
+          echo "   Payload: $(head -c 200 page_payload.txt)..."
           
           update_response=$(curl -s -w "\n%{http_code}" -X POST \
             "${AEM_URL}${page_path}" \
             -u "${AEM_USERNAME}:${AEM_PASSWORD}" \
             -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "$page_payload")
+            --data-binary @page_payload.txt)
           
           update_code=$(echo "$update_response" | tail -n1)
           echo "   Update HTTP: $update_code"
