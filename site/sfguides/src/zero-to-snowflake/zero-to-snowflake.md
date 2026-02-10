@@ -1,13 +1,14 @@
-author: Cameron Shimmin, Dureti Shemsi
+author: Cameron Shimmin, Dureti Shemsi, ST
 id: zero-to-snowflake
 categories: snowflake-site:taxonomy/solution-center/certification/quickstart, snowflake-site:taxonomy/product/platform, snowflake-site:taxonomy/snowflake-feature/ingestion, snowflake-site:taxonomy/snowflake-feature/transformation, snowflake-site:taxonomy/snowflake-feature/dynamic-tables
 language: en
-summary: Zero to Snowflake 
+summary: Zero to Snowflake Test 
 environments: web
 status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 
 # Zero to Snowflake
+# Test content
 
 ## Overview
 
@@ -22,6 +23,7 @@ We'll apply these concepts using a sample dataset from our fictitious food truck
 ### Who is Tasty Bytes?
 
 ![./assets/whoistb.png](./assets/whoistb.png)
+![./assets/si_header.png](./assets/si_header.png)
 
 Our mission is to provide unique, high-quality food options in a convenient and cost-effective manner, emphasizing the use of fresh ingredients from local vendors. Their vision is to become the largest food truck network in the world with a zero carbon footprint.
 
@@ -229,6 +231,9 @@ We will now be working with smaller datasets, so we can scale our warehouse back
 ALTER WAREHOUSE my_wh SET warehouse_size = 'XSmall';
 ```
 
+```python
+  test code snippet
+```
 ### Basic Transformation Techniques
 
 
