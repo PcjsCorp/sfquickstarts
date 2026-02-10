@@ -44,7 +44,7 @@ This progression takes you from a simple database connection to a production-rea
 <!-- ------------------------ -->
 ## Getting Started
 
-Clone or download the code from the [30 Days of AI GitHub repository](https://github.com/streamlit/30daysofai):
+Clone or download the code from the [30daysofai](https://github.com/streamlit/30daysofai) GitHub repository:
 
 ```bash
 git clone https://github.com/streamlit/30DaysOfAI.git
@@ -522,6 +522,14 @@ You are an expert at {role}. Generate content based on:
 ```
 
 This pattern makes prompts dynamic and user-configurable.
+
+### Deploy the App
+
+Save the code above as `streamlit_app.py` and deploy using one of these options:
+
+- **Local**: Run `streamlit run streamlit_app.py` in your terminal
+- **Streamlit Community Cloud**: [Deploy your app](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy) from a GitHub repository
+- **Streamlit in Snowflake (SiS)**: [Create a Streamlit app](https://docs.snowflake.com/en/developer-guide/streamlit/getting-started/create-streamlit-ui) directly in Snowsight
 
 <!-- ------------------------ -->
 ## Conclusion And Resources
