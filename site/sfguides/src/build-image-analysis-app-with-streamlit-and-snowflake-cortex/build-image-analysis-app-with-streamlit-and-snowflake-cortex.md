@@ -8,7 +8,7 @@ status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 tags: Streamlit, Cortex, Vision AI, Multimodal, Image Analysis
 
-# Build an Image Analysis App with Cortex
+# Build an Image Analysis App with Streamlit and Snowflake Cortex
 <!-- ------------------------ -->
 ## Overview
 
