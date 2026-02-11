@@ -253,7 +253,9 @@ Download the following CSV files (also available through the AWS bucket provided
 - [USERS_MESSAGES_EMAIL_OPEN_VIEW.csv](https://drive.google.com/file/d/1flPAmYxc5GDAE39C7AfxDoxJO3hGFtJg/view?usp=sharing)
 - [USERS_MESSAGES_EMAIL_SEND_VIEW.csv](https://drive.google.com/file/d/10IJVJ57RymlVodGQZOHXznDddx28sYBy/view?usp=sharing)
 - [CHANGELOGS_CAMPAIGN_VIEW.csv](https://drive.google.com/file/d/1bh7hC__TMH52pmqnH2ZAEUA19AsC5Q7r/view?usp=sharing)
-- PRODUCT_REVIEWS.csv (included in this quickstart)
+
+Positive
+: **Note**: Product reviews data will be inserted directly via SQL in the next section, so no CSV upload is required for that table.
 
 ### Upload Files to Stage
 
@@ -261,11 +263,11 @@ To upload the data files:
 
 1. Choose **Create** in the left-hand navigation and select **Add Data** from the dropdown
 2. On the Add Data page, select **Load files into a stage**
-3. Select the six files that you want to upload (listed above)
+3. Select the five Braze CSV files that you want to upload (listed above)
 4. Select BRAZE_ENGAGEMENT as Database, EMAIL_DATA as Schema, and EMAIL_STAGE as Stage
 5. Click **Upload**
 
-Navigate to **Data > Databases**, click into your BRAZE_ENGAGEMENT Database, EMAIL_DATA Schema, and the EMAIL_STAGE. You should see your 6 files listed.
+Navigate to **Data > Databases**, click into your BRAZE_ENGAGEMENT Database, EMAIL_DATA Schema, and the EMAIL_STAGE. You should see your 5 files listed.
 
 ## Load Data into Tables
 
@@ -295,22 +297,30 @@ FILE_FORMAT = (
 )
 ON_ERROR=ABORT_STATEMENT;
 
--- load data into product reviews table
-COPY INTO "BRAZE_ENGAGEMENT"."EMAIL_DATA"."PRODUCT_REVIEWS"
-FROM (
-    SELECT $1, $2, $3, $4, $5, TO_DATE($6, 'DD/MM/YYYY'), $7, $8, $9
-    FROM '@"BRAZE_ENGAGEMENT"."EMAIL_DATA"."EMAIL_STAGE"'
-)
-FILES = ('PRODUCT_REVIEWS.csv')
-FILE_FORMAT = (
-    TYPE=CSV,
-    SKIP_HEADER=1,
-    FIELD_DELIMITER=',',
-    TRIM_SPACE=TRUE,
-    FIELD_OPTIONALLY_ENCLOSED_BY='"',
-    REPLACE_INVALID_CHARACTERS=TRUE
-)
-ON_ERROR=ABORT_STATEMENT;
+-- Insert product reviews data directly
+INSERT INTO "BRAZE_ENGAGEMENT"."EMAIL_DATA"."PRODUCT_REVIEWS" 
+    (REVIEW_ID, USER_ID, RATING, REVIEW_TEXT, PRODUCT_SENTIMENT, REVIEW_DATE, PURCHASE_LOCATION, PRODUCT_CATEGORY, ITEM_NAME)
+VALUES
+    ('R-1001', '06Y1ResADlZutwm', 5, 'The denim jeans fit perfectly and the quality is exceptional for the price. I wish I had bought two pairs!', 'Positive', '2026-03-01', 'Retail Store', 'Apparel', 'Denim Jeans'),
+    ('R-1002', '0MJWsStTQuYWYq7', 1, 'My coffee maker stopped working after the first week. Customer service was unhelpful and the return process is lengthy.', 'Negative', '2026-03-02', 'Online', 'Home Goods', 'Coffee Maker'),
+    ('R-1003', '1NQHFvWpLpo5LkC', 4, 'Love these wireless earbuds! Great sound for the price, though the charging case feels a little cheap.', 'Positive', '2026-03-03', 'App', 'Electronics', 'Wireless Earbuds'),
+    ('R-1004', '1N6R4EtkRuKEjFP', 3, 'The travel guide was adequate, but definitely focused on tourist traps. Could have found better information online.', 'Neutral', '2026-03-04', 'Retail Store', 'Books', 'Travel Guide'),
+    ('R-1005', '1OEy7FFzL9n5FTl', 5, 'Gorgeous leather belt. High quality leather and the buckle looks very classy. Fast shipping too!', 'Positive', '2026-03-05', 'Online', 'Accessories', 'Leather Belt'),
+    ('R-1006', '09cW2jhmIPQ6CZ8', 2, 'The Desk Organizer was broken upon arrival. The plastic is very brittle. Disappointed with the packaging.', 'Negative', '2026-03-06', 'Retail Store', 'Office Supplies', 'Desk Organizer'),
+    ('R-1007', '0PCkfnjde7Pz7Ya', 5, 'This portable charger is a lifesaver. Holds multiple charges and is surprisingly slim. Five stars!', 'Positive', '2026-03-07', 'App', 'Electronics', 'Portable Charger'),
+    ('R-1008', '1kQ6yr6aL53RiIi', 4, 'Great comfy throw pillow, but the colour online was slightly different than in person. Still keeping it.', 'Positive', '2026-03-08', 'Online', 'Home Goods', 'Throw Pillow'),
+    ('R-1009', '1rBWPEkCfELrJvN', 1, 'The blouse I ordered was completely mis-sized. Their sizing chart is inaccurate. Painful return.', 'Negative', '2026-03-09', 'Retail Store', 'Apparel', 'Women''s Blouse'),
+    ('R-1010', '1CiXHH9esPaVbPD', 5, 'Fantastic graphic novel! Gripping story and beautiful artwork. I finished it in one sitting.', 'Positive', '2026-03-10', 'Online', 'Books', 'Graphic Novel'),
+    ('R-1011', '2TJbTSzVuzOLCyV', 3, 'The Ballpoint Pen Set is okay. They write smoothly, but the ink runs out very quickly. Average performance.', 'Neutral', '2026-03-11', 'App', 'Office Supplies', 'Ballpoint Pen Set'),
+    ('R-1012', '1nr0Sc7qqc11Yvs', 5, 'The smartwatch is incredible. Battery lasts for days, and the fitness tracking is spot-on.', 'Positive', '2026-03-12', 'Retail Store', 'Electronics', 'Smartwatch'),
+    ('R-1013', '1wVK1lM7ubrkm2X', 4, 'Very stylish sunglasses. They feel durable and the lens clarity is excellent.', 'Positive', '2026-03-13', 'Online', 'Accessories', 'Sunglasses'),
+    ('R-1014', '0qQjEmXLdgz60m4', 2, 'Received the wrong colour sweater. Tried to exchange it at the store, but they were sold out. Frustrating.', 'Negative', '2026-03-14', 'Retail Store', 'Apparel', 'Wool Sweater'),
+    ('R-1015', '1FSTUNOW1Rvxm9x', 5, 'The bestseller novel was a phenomenal read! A true page-turner. Highly recommend this author.', 'Positive', '2026-03-15', 'Online', 'Books', 'Bestseller Novel'),
+    ('R-1016', '0aAwdB6llYxSJTf', 3, 'The kettle is functional, but it''s much louder than my previous one. Neutral experience overall.', 'Neutral', '2026-03-16', 'App', 'Home Goods', 'Electric Kettle'),
+    ('R-1017', '0y1lStmktDkJe2V', 1, 'The store layout was confusing and the staff seemed more interested in talking amongst themselves.', 'Negative', '2026-03-17', 'Retail Store', 'Accessories', 'Handbag'),
+    ('R-1018', '0xzqZ2V5su9JSBj', 5, 'Perfect set of noise-cancelling headphones. Essential for my commute. Worth every cent.', 'Positive', '2026-03-18', 'Online', 'Electronics', 'Noise-Cancelling Headphones'),
+    ('R-1019', '2TYPHX063nLHydF', 4, 'The Notebook has high quality paper. Only drawback is the cover scratches easily.', 'Positive', '2026-03-19', 'App', 'Office Supplies', 'Lined Notebook'),
+    ('R-1020', '10ltT8M0ESCZD8M', 2, 'The Premium T-Shirt shrank significantly after the first wash, even following the care instructions.', 'Negative', '2026-03-20', 'Retail Store', 'Apparel', 'Premium T-Shirt');
 
 -- load data into email sends tables
 COPY INTO "BRAZE_ENGAGEMENT"."EMAIL_DATA"."EMAIL_SENDS"
