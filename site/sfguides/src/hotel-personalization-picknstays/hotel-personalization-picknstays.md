@@ -3,7 +3,7 @@ language: en
 summary: Executive intelligence platform for multi-property hotel portfolios built on Snowflake
 categories: snowflake-site:taxonomy/industry/travel-and-hospitality, snowflake-site:taxonomy/product/ai, snowflake-site:taxonomy/product/analytics, snowflake-site:taxonomy/snowflake-feature/ingestion/conversational-assistants, snowflake-site:taxonomy/snowflake-feature/applied-analytics, snowflake-site:taxonomy/snowflake-feature/cortex-analyst, snowflake-site:taxonomy/snowflake-feature/cortex-search, snowflake-site:taxonomy/snowflake-feature/snowflake-intelligence, snowflake-site:taxonomy/snowflake-feature/snowpark, snowflake-site:taxonomy/snowflake-feature/snowflake-ml-functions, snowflake-site:taxonomy/solution-center/certification/certified-solution
 environments: web
-status: Hidden
+status: Published
 authors: Sri Subramanian, Dureti Shemsi
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 tags: Cortex AI, Snowflake Intelligence, Cortex Analyst, Cortex Search, Snowpark ML, Hotel Analytics, Executive Intelligence, Hospitality, Streamlit, Customer Experience, Loyalty Programs, Portfolio Management
