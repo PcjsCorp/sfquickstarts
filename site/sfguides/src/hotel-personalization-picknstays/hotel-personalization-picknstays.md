@@ -72,10 +72,6 @@ This solution leverages the following Snowflake platform capabilities:
 
 **Cortex Agents**: Five specialized AI agents for domain-specific analysis (Guest Analytics, Personalization, Amenities Intelligence, Experience Optimizer) plus the Hotel Intelligence Master Agent orchestrating comprehensive strategic analysis across all 9 semantic views.
 
-**Snowpark ML**: Machine learning framework for churn risk scoring, guest propensity modeling, and predictive analytics on guest behavior patterns.
-
-**Snowflake Cortex AI**: Built-in AI functions for sentiment analysis, text classification, and natural language processing on guest reviews and service feedback.
-
 ## Technical Capabilities
 
 **Portfolio Overview Dashboard**: Real-time portfolio health monitoring with 5 executive KPIs (Occupancy %, ADR, RevPAR, Repeat Stay Rate, Guest Satisfaction), performance visualizations by brand and region, 30-day trend analysis, experience health heatmap, and prioritized outliers & exceptions table with color-coded indicators.
