@@ -8,7 +8,7 @@ status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 open in snowflake link: https://app.snowflake.com/templates/?template=intro_to_iceberg&utm_source=snowflake-devrel&utm_medium=developer-guides&utm_content=intro_to_iceberg&utm_cta=developer-guides-deeplink
 
-# Getting Started with Apache Iceberg™
+# Introduction to Apache Iceberg™
 
 <!-- ------------------------ -->
 ## Overview
