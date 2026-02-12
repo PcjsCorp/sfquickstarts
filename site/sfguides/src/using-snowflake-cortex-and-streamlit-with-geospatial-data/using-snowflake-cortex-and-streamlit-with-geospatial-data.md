@@ -1980,7 +1980,7 @@ You will have learned the following:
 
 - Met office **to follow**
 
-#### Source code.
+#### Source code
 
 - [Source Code on Github](https://github.com/Snowflake-Labs/sfguide-using-snowflake-cortex-and-streamlit-with-geospatial-data)
 
@@ -1997,4 +1997,3 @@ You will have learned the following:
 - [Getting started with Geospatial AI and ML using Snowflake Cortex](/en/developers/guides/geo-for-machine-learning/)
 
 - [Build a Retrieval Augmented Generation (RAG) based LLM assistant using Streamlit and Snowflake Cortex](https://quickstarts.snowflake.com/guide/asking_questions_to_your_own_documents_with_snowflake_cortex/index.html#0)
-
