@@ -73,10 +73,10 @@ def build_content_fragment_payload(
         form_data.append(("./data/master/quickstartArticleForkRepoLink", fork_repo_link))
     if open_in_snowflake_link:
         form_data.append(("./data/master/quickstartArticleOpenInSnowflakeLink", open_in_snowflake_link))
-    if quickstart_authors:
-        form_data.append(("./data/master/quickstartArticleAuthor", quickstart_authors))
-    if quickstart_author:
-        form_data.append(("./data/master/quickstartArticleAuthor", quickstart_author))
+    # Use authors if available, otherwise fall back to author
+    author_value = quickstart_authors or quickstart_author
+    if author_value:
+        form_data.append(("./data/master/quickstartArticleAuthor", author_value))
     if quickstart_summary:
         form_data.append(("./data/master/quickstartArticleSummary", quickstart_summary))
     if quickstart_body:

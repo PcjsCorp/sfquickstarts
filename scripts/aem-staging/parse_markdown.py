@@ -151,8 +151,11 @@ def parse_markdown(
     
     frontmatter, content = extract_frontmatter(markdown_text)
     
+    # Strip H1 header from content since title is displayed in hero section
+    content_without_h1 = re.sub(r'^#\s+.+\n*', '', content, count=1)
+    
     transformed_content, images_count = transform_image_urls(
-        content, base_image_url, quickstart_name
+        content_without_h1, base_image_url, quickstart_name
     )
     
     qid = frontmatter.get('id', quickstart_name)
