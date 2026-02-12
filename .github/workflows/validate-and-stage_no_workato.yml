@@ -635,10 +635,10 @@ jobs:
       commit_sha: ${{ github.event.pull_request.head.sha }}
       pr_number: ${{ github.event.pull_request.number }}
     secrets:
-      AEM_USERNAME: ${{ secrets.AEM_USERNAME_STAGING }}
-      AEM_PASSWORD: ${{ secrets.AEM_PASSWORD_STAGING }}
-      AEM_AUTHOR_URL: ${{ secrets.AEM_AUTHOR_URL_STAGING }}
-      AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL_STAGING }}
+      AEM_USERNAME: ${{ secrets.AEM_USERNAME_DEV }}
+      AEM_PASSWORD: ${{ secrets.AEM_PASSWORD_DEV }}
+      AEM_AUTHOR_URL: ${{ secrets.AEM_AUTHOR_URL_DEV }}
+      AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL_DEV }}
 
 # test
 # test2
