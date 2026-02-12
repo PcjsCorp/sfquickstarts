@@ -43,10 +43,10 @@ jobs:
   stage_quickstart:
     runs-on: ubuntu-latest
     env:
-      AEM_USERNAME: ${{ secrets.AEM_USERNAME }}
-      AEM_PASSWORD: ${{ secrets.AEM_PASSWORD }}
-      AEM_URL: ${{ secrets.AEM_AUTHOR_URL }}
-      AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL }}
+      AEM_USERNAME: ${{ secrets.AEM_USERNAME_STAGING }}
+      AEM_PASSWORD: ${{ secrets.AEM_PASSWORD_STAGING }}
+      AEM_URL: ${{ secrets.AEM_AUTHOR_URL_STAGING }}
+      AEM_PUBLISH_URL: ${{ secrets.AEM_PUBLISH_URL_STAGING }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
