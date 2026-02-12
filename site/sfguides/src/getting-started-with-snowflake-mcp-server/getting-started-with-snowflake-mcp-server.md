@@ -78,6 +78,9 @@ This tool enables the agent to query structured data in Snowflake by generating 
 * On the top right, click on **Create new** down arrow and select **Upload your YAML file** 
 * Upload [FINANCIAL_SERVICES_ANALYTICS.yaml](https://github.com/Snowflake-Labs/sfguide-getting-started-with-snowflake-mcp-server/blob/main/FINANCIAL_SERVICES_ANALYTICS.yaml) | Select database, schema, and stage: **DASH_MCP_DB.DATA** >> **SEMANTIC_MODELS** 
 * On the top right, click on **Save**
+
+#### Semantic View
+
 * In Snowsight, [create Semantic View](https://docs.snowflake.com/en/user-guide/views-semantic/ui#label-views-semantic-ui-create) based on the YAML file.
 
 <!-- ------------------------ -->
