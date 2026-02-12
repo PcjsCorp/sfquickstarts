@@ -92,17 +92,17 @@ To create the Snowflake MCP server, run the following in the same SQL worksheet.
 create or replace mcp server dash_mcp_server from specification
 $$
 tools:
-  - name: "Finance & Risk Assessment Semantic View"
+  - name: "Finance_and_Risk_Assessment_Semantic_View"
     identifier: "DASH_MCP_DB.DATA.FINANCIAL_SERVICES_ANALYTICS"
     type: "CORTEX_ANALYST_MESSAGE"
     description: "Comprehensive semantic model for financial services analytics, providing unified business definitions and relationships across customer data, transactions, marketing campaigns, support interactions, and risk assessments."
     title: "Financial And Risk Assessment"
-  - name: "Support Tickets Cortex Search"
+  - name: "Support_Tickets_Cortex_Search"
     identifier: "DASH_MCP_DB.DATA.SUPPORT_TICKETS"
     type: "CORTEX_SEARCH_SERVICE_QUERY"
     description: "A tool that performs keyword and vector search over unstructured support tickets data."
     title: "Support Tickets Cortex Search"
-  - name: "SQL Execution Tool"
+  - name: "SQL_Execution_Tool"
     type: "SYSTEM_EXECUTE_SQL"
     description: "A tool to execute SQL queries against the connected Snowflake database."
     title: "SQL Execution Tool"
