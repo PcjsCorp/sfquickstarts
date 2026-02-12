@@ -11,12 +11,10 @@ tags: Data Science, Data Engineering, Unstructured Data
 <!-- ------------------------ -->
 ## Overview 
 
-
 This Quickstart is designed to help you understand the capabilities included in Snowflake’s support for unstructured data and Snowpark. Although this guide is specific to processing PDF files, you can apply this pattern of processing natively in Snowflake to many types of unstructured data. All source code for this guide can be found on [Github](https://github.com/Snowflake-Labs/sfquickstarts).
 
 ### Prerequisites
 - Completion of [Getting Started with Unstructured Data](/en/developers/guides/getting-started-with-unstructured-data/)
-- Test GH Wokrflow
 
 ### What You'll Need
 - Snowflake account
@@ -57,10 +55,6 @@ For this quickstart, we will use an external stage, but processing and analysis 
 
 ### Create a Database, Warehouse, and Stage
 Let's create a database, warehouse, and stage that will be used for loading and processing the PDFs. We will use the UI within the Worksheets tab to run the DDL that creates the database and schema. Copy the commands below into your trial environment, and execute each individually.
-
-```
-Test content
-```
 
 ```sql
 use role sysadmin;
