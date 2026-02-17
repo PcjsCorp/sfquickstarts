@@ -23,7 +23,7 @@ In this quickstart, you'll build a voice-enabled AI assistant using Snowflake Co
 ### What You'll Build
 A voice-enabled chatbot where users record audio messages, which are transcribed and processed by an LLM, creating a natural voice conversation interface.
 
-![Voice assistant with transcribed conversation](assets/app.png)
+![](assets/app.png)
 
 ### Prerequisites
 - Access to a [Snowflake account](https://signup.snowflake.com/?utm_source=snowflake-devrel&utm_medium=developer-guides&utm_cta=developer-guides)
@@ -257,6 +257,8 @@ Conversation history is formatted as a dialogue for context. The LLM generates a
 <!-- ------------------------ -->
 ## Complete Application
 
+Putting this together, we have a full working Voice Assistant App:
+
 ```python
 import streamlit as st
 import json
@@ -463,6 +465,10 @@ else:
 st.divider()
 st.caption("Day 25: Voice Interface | 30 Days of AI")
 ```
+
+Let's now take a look at the voice assistant app that we've built:
+
+![](assets/output.gif)
 
 ### Deploy the App
 
