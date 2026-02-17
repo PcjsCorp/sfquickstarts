@@ -4,7 +4,7 @@ id: defect-detection-using-distributed-pytorch-with-snowflake-notebooks
 summary: Train a custom YOLOv12 defect detection model on GPU compute directly inside Snowflake to eliminate PCB quality control silos, reduce false positives, and cut scrap costs.
 categories: snowflake-site:taxonomy/solution-center/certification/certified-solution, snowflake-site:taxonomy/product/ai, snowflake-site:taxonomy/product/data-engineering, snowflake-site:taxonomy/product/applications-and-collaboration, snowflake-site:taxonomy/snowflake-feature/model-development, snowflake-site:taxonomy/snowflake-feature/snowpark-container-services, snowflake-site:taxonomy/snowflake-feature/snowpark, snowflake-site:taxonomy/industry/manufacturing
 environments: web
-status: Hidden
+status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 fork repo link: https://github.com/Snowflake-Labs/sfguide-defect-detection-using-distributed-pytorch-with-snowflake-notebooks
 
