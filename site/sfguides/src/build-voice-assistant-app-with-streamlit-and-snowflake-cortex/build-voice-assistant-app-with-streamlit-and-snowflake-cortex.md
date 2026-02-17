@@ -69,6 +69,8 @@ Create a stage with `SNOWFLAKE_SSE` encryption, required for `AI_TRANSCRIBE` to 
 
 ### Connection and State Setup
 
+Start by importing necessary libraries and setting up the Snowflake connection. The try/except pattern enables the app to work in both Streamlit in Snowflake and local environments:
+
 ```python
 import streamlit as st
 import json
@@ -114,6 +116,8 @@ The session state tracks conversation messages, database configuration, and a ha
 
 ### Sidebar Settings
 
+The sidebar houses the app title, settings, and stage management controls:
+
 ```python
 database = st.session_state.voice_database
 schema = st.session_state.voice_schema
@@ -153,6 +157,8 @@ The sidebar contains settings and controls. The stage status expander ensures th
 ## Transcribe Audio with AI_TRANSCRIBE
 
 ### Process Recorded Audio
+
+The main area displays the conversation and audio input widget. When audio is recorded, it's uploaded to the stage and transcribed:
 
 ```python
 st.subheader(":material/voice_chat: Conversation")
@@ -220,6 +226,8 @@ if audio is not None:
 ## Generate Voice Responses
 
 ### Build Conversational Context
+
+After transcription, the conversation history is formatted as context for the LLM to generate a relevant response:
 
 ```python
             if transcript:
