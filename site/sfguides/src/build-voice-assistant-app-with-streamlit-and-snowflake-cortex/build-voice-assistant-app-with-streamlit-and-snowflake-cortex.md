@@ -260,7 +260,9 @@ else:
     st.session_state.processed_audio_id = None
 ```
 
-Conversation history is formatted as a dialogue for context. The LLM generates a conversational response. The `REMOVE` command cleans up the temporary audio file. `st.rerun()` refreshes the display with new messages.
+Conversation history is formatted as a dialogue for context. The LLM generates a conversational response. The `REMOVE` command cleans up the temporary audio file. `st.rerun()` refreshes the display with new messages. 
+
+Finally, the `else` block resets `processed_audio_id` to `None` when no audio is present, allowing subsequent recordings to be processed.
 
 <!-- ------------------------ -->
 ## Complete Application
