@@ -95,8 +95,11 @@ def call_llm(prompt_text: str) -> str:
     return str(response_json)
 
 if "voice_messages" not in st.session_state:
+    st.session_state.voice_messages = []
+
+if len(st.session_state.voice_messages) == 0:
     st.session_state.voice_messages = [
-        {"role": "assistant", "content": "Hello! I'm your voice-enabled AI assistant. Click the microphone to record a message!"}
+        {"role": "assistant", "content": "Hello! :material/waving_hand: I'm your voice-enabled AI assistant. Click the microphone button to record a message, and I'll respond to you!"}
     ]
 
 if "voice_database" not in st.session_state:
@@ -109,7 +112,7 @@ if "processed_audio_id" not in st.session_state:
 
 The session state tracks conversation messages, database configuration, and a hash of the last processed audio. The hash prevents reprocessing the same recording on Streamlit reruns.
 
-### Sidebar with Audio Input
+### Sidebar Settings
 
 ```python
 database = st.session_state.voice_database
@@ -118,11 +121,8 @@ full_stage_name = f"{database}.{schema}.VOICE_AUDIO"
 stage_name = f"@{full_stage_name}"
 
 with st.sidebar:
-    st.title(":material/record_voice_over: Voice Assistant")
+    st.title(":material/record_voice_over: Voice-Enabled Assistant")
     st.write("Talk to your AI assistant using voice input!")
-    
-    st.subheader(":material/mic: Record Your Message")
-    audio = st.audio_input("Click to record")
     
     st.header(":material/settings: Settings")
     
@@ -136,18 +136,18 @@ with st.sidebar:
                 DIRECTORY = ( ENABLE = true )
                 ENCRYPTION = ( TYPE = 'SNOWFLAKE_SSE' )
             """).collect()
-            st.success(":material/check_box: Audio stage ready")
+            st.success(":material/check_box: Audio stage ready (server-side encrypted)")
         except Exception as e:
-            st.error(f":material/cancel: Could not create stage: {str(e)}")
+            st.error(f":material/cancel: Could not create stage")
     
     if st.button(":material/delete: Clear Chat"):
         st.session_state.voice_messages = [
-            {"role": "assistant", "content": "Hello! I'm your voice-enabled AI assistant. Click the microphone to record a message!"}
+            {"role": "assistant", "content": "Hello! :material/waving_hand: I'm your voice-enabled AI assistant. Click the microphone button to record a message, and I'll respond to you!"}
         ]
         st.rerun()
 ```
 
-`st.audio_input()` provides a microphone button for recording. The stage status expander ensures the audio stage exists with proper encryption. Stage recreation handles edge cases where the stage is misconfigured.
+The sidebar contains settings and controls. The stage status expander ensures the audio stage exists with proper encryption. Stage recreation handles edge cases where the stage is misconfigured.
 
 <!-- ------------------------ -->
 ## Transcribe Audio with AI_TRANSCRIBE
@@ -156,6 +156,9 @@ with st.sidebar:
 
 ```python
 st.subheader(":material/voice_chat: Conversation")
+
+audio = st.audio_input(":material/mic: Click to record")
+
 for msg in st.session_state.voice_messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
@@ -211,7 +214,7 @@ if audio is not None:
                     st.error(f"Error during transcription: {str(e)}")
 ```
 
-Audio bytes are hashed with MD5 to create a unique ID. `put_stream()` uploads the audio to the stage. `AI_TRANSCRIBE` with `TO_FILE()` converts speech to text. The transcript is parsed from JSON and added to the conversation.
+`st.audio_input()` provides the microphone button for recording in the main area. Audio bytes are hashed with MD5 to create a unique ID. `put_stream()` uploads the audio to the stage. `AI_TRANSCRIBE` with `TO_FILE()` converts speech to text. The transcript is parsed from JSON and added to the conversation.
 
 <!-- ------------------------ -->
 ## Generate Voice Responses
@@ -287,7 +290,7 @@ if len(st.session_state.voice_messages) == 0:
     st.session_state.voice_messages = [
         {
             "role": "assistant",
-            "content": "Hello! :material/waving_hand: I'm your voice-enabled AI assistant. Click the microphone button in the sidebar to record a message, and I'll respond to you!"
+            "content": "Hello! :material/waving_hand: I'm your voice-enabled AI assistant. Click the microphone button to record a message, and I'll respond to you!"
         }
     ]
 
@@ -306,9 +309,6 @@ stage_name = f"@{full_stage_name}"
 with st.sidebar:
     st.title(":material/record_voice_over: Voice-Enabled Assistant")
     st.write("Talk to your AI assistant using voice input!")
-    
-    st.subheader(":material/mic: Record Your Message")
-    audio = st.audio_input("Click to record")
     
     st.header(":material/settings: Settings")
     
@@ -362,12 +362,15 @@ with st.sidebar:
         st.session_state.voice_messages = [
             {
                 "role": "assistant",
-                "content": "Hello! :material/waving_hand: I'm your voice-enabled AI assistant. Click the microphone button in the sidebar to record a message, and I'll respond to you!"
+                "content": "Hello! :material/waving_hand: I'm your voice-enabled AI assistant. Click the microphone button to record a message, and I'll respond to you!"
             }
         ]
         st.rerun()
 
 st.subheader(":material/voice_chat: Conversation")
+
+audio = st.audio_input(":material/mic: Click to record")
+
 for msg in st.session_state.voice_messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
