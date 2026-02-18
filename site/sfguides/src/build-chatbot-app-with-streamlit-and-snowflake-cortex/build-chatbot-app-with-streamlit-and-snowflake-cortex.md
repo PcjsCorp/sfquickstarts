@@ -149,7 +149,7 @@ Always check if a key exists before initializing to prevent overwriting data on 
 
 Here's session state in action, maintaining the counter value across reruns:
 
-![Day 9: Session state persisting data across Streamlit reruns](assets/day9.png)
+![Day 9: Session state persisting data across Streamlit reruns](assets/day9.gif)
 
 <!-- ------------------------ -->
 ## Build Your First Chatbot
@@ -323,7 +323,7 @@ The generator function yields words one at a time with a small delay, creating a
 
 Here's the streaming response in action:
 
-![Day 12: Streaming responses with typing effect](assets/day12.png)
+![Day 12: Streaming responses with typing effect](assets/day12.gif)
 
 <!-- ------------------------ -->
 ## Add System Prompts
