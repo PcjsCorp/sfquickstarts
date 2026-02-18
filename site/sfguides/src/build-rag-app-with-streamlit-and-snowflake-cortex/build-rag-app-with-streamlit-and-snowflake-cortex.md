@@ -1,6 +1,6 @@
 author: Chanin Nantasenamat
 id: build-rag-app-with-streamlit-and-snowflake-cortex
-summary: Build a complete RAG app with Snowflake Cortex and Streamlit; from data preparation and chunking to creating a conversational chatbot with TruLens evaluation.
+summary: Build a complete RAG pipeline with Snowflake Cortex Search, from data preparation and chunking to creating a conversational chatbot with TruLens evaluation.
 categories: snowflake-site:taxonomy/solution-center/certification/quickstart,snowflake-site:taxonomy/product/ai
 language: en
 environments: web
@@ -12,7 +12,11 @@ tags: Streamlit, Cortex Search, RAG, Vector Embeddings, TruLens, AI Observabilit
 <!-- ------------------------ -->
 ## Overview
 
-In this quickstart, you'll build a complete Retrieval-Augmented Generation (RAG) pipeline using Snowflake Cortex and Streamlit. Starting from raw documents, you'll learn data preparation, text chunking, creating a search service, building a conversational RAG chatbot, and evaluating quality with TruLens.
+Retrieval-Augmented Generation (RAG) enhances LLM responses by grounding them in your own data. Instead of relying solely on a model's training knowledge, RAG retrieves relevant documents and uses them as context thereby reducing hallucinations and enabling accurate, domain-specific answers.
+
+In this quickstart, you'll build a complete RAG pipeline using Snowflake Cortex Search. Starting from raw documents, you'll learn data preparation, text chunking, creating a search service, building a conversational RAG chatbot, and evaluating quality with TruLens. 
+
+This tutorial distills key lessons from the [#30DaysOfAI](https://30daysofai.streamlit.app/) learning challenge into a hands-on guide.
 
 ### What You'll Learn
 - How to prepare and chunk documents for RAG (Days 16-17)
@@ -25,8 +29,6 @@ In this quickstart, you'll build a complete Retrieval-Augmented Generation (RAG)
 
 ### What You'll Build
 A complete RAG system including a Cortex Search service for customer reviews and a conversational chatbot that answers questions grounded in retrieved documents, with TruLens evaluation for quality metrics.
-
-![RAG Chatbot with retrieved sources](assets/app.png)
 
 ### Prerequisites
 - Access to a [Snowflake account](https://signup.snowflake.com/?utm_source=snowflake-devrel&utm_medium=developer-guides&utm_cta=developer-guides)
