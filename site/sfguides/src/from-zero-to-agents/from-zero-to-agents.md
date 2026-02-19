@@ -263,13 +263,11 @@ Let's ask the following questions
 
 ### Q1. What are the top 5 campaigns by clicks?
 
-### Q2. Show me all campaign performance metrics
+### Q2. Show me all campaign performance metrics and it's relationship to the product
 
-### Q3. What product performed the best in the campaign?
+### Q3.  Which campaign provided the best outcome for the products?
 
-### Q4. Which campaign provided the best outcome for the products?
-
-### Q5. What is the relationship between campaign clicks and customer satisfaction by category?
+### Q4. What is the relationship between campaign clicks and customer satisfaction by category?
 
 
 ## Security (optional)
