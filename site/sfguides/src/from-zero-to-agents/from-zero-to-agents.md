@@ -131,7 +131,7 @@ SELECT m.campaign_name, m.clicks, s.product AS product_name,
 FROM marketing_campaign_metrics m
 JOIN support_cases s ON m.category = s.product;
 ```
-
+Confirm the creation of the Dynamic Table by navigating to `Catalog` > `Database Explorer` > `DASH_DB_SI.RETAIL.DYNAMIC TABLES.ENRICHED_MARKETING_INTELLIGENCE`. If you do not see your table, click on the refresh button and the table should appear. 
 <!-- ------------------------ -->
 
 ## Semantic Layer and Agent Creation
@@ -148,7 +148,7 @@ This tool enables the agent to query structured data in Snowflake by generating 
    - **Warehouse:** `DASH_WH_SI`
    - **Location to store:** `DASH_DB_SI.Retail`
    - **Name:** `SEMANTIC_VIEW`
-   - **Select tables:** Select all tables `DASH_DB_SI.Retail`, should be 5 tables and 1 dynamic table
+   - **Select tables:** Select all tables `DASH_DB_SI.Retail` (there should be 5 tables and 1 dynamic table)
    - **Select Columns:** Select all columns
 4. Click `Create and Save`
 5. Scroll to the `MARKETING_CAMPAIGN_METRICS` section and click `Edit`
@@ -198,7 +198,6 @@ Tools are the capabilities an agent can use to accomplish a task. Think of them 
 1. Click on **+Add**
 2. Configure the following settings:
 - **Service database & schema:** `DASH_DB_SI.Retail`
-- **Agent Name:** `MarketingAgent`
 - **Select semantic view:** `SEMANTIC_VIEW`
 - **Name:** `semantic_view`
 - **Description:** Click on `Generate with Cortex`
@@ -265,9 +264,11 @@ Let's ask the following questions
 
 ### Q2. Show me all campaign performance metrics and it's relationship to the product
 
-### Q3.  Which campaign provided the best outcome for the products?
+### Q3. What is the relationship between campaign clicks and customer satisfaction by category?
 
-### Q4. What is the relationship between campaign clicks and customer satisfaction by category?
+### Q4. What are the main customer complains in support cases?
+
+
 
 
 ## Security (optional)
