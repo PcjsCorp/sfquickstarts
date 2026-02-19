@@ -1,5 +1,5 @@
 author: Siavash Yasini, Chanin Nantasenamat
-id: build-llm-model-comparison-arena-app-with-streamlit-and-snowflake-cortex
+id: build-llm-model-comparison-app-with-streamlit-and-snowflake-cortex
 summary: Build an LLM model comparison arena to evaluate different Snowflake Cortex models side-by-side with performance metrics like latency and token count.
 categories: snowflake-site:taxonomy/solution-center/certification/quickstart,snowflake-site:taxonomy/product/ai
 language: en
@@ -8,7 +8,7 @@ status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
 tags: Streamlit, Cortex, LLM, Model Comparison, AI
 
-# Build an LLM Model Comparison Arena App with Streamlit and Snowflake Cortex
+# Build an LLM Model Comparison App with Streamlit and Snowflake Cortex
 <!-- ------------------------ -->
 ## Overview
 
