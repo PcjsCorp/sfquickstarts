@@ -395,8 +395,18 @@ Scrolling down, reveals a few metrics display of token count and model latency:
 
 ![](assets/output2.png)
 
+### Challenge: Extend Your Arena
 
-### Deploy the App
+Ready to take your model comparison arena to the next level? Try adding additional metrics to give you deeper insights into model performance:
+
+- **Time to First Token (TTFT)**: Measure how quickly the model starts generating output
+- **Tokens per Second**: Calculate the generation speed for streaming responses
+- **Cost per Query**: Estimate credit consumption based on token usage
+- **Response Quality Score**: Add a thumbs up/down rating system to track subjective quality
+
+What other metrics would help you choose the right model for your use case? Experiment and share your extensions with the community!
+
+## Deploy the App
 
 Save the code above as `streamlit_app.py` and deploy using one of these options:
 
