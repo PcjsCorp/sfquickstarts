@@ -98,6 +98,9 @@ SELECT
     SNOWFLAKE.CORTEX.AI_CLASSIFY(transcript, ['Return', 'Quality', 'Shipping']) AS issue_category
 FROM support_cases;
 ```
+![Extract trends](assets/extracttrends.png)
+
+
 ### Updating Marketing Data
 Confirm that the role is set to `SNOWFLAKE_INTELLIGENCE_ADMIN` by clicking on your profile in the bottom left corner.
 1. Download the [marketing_data.csv](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/from-zero-to-agents/assets/marketing_data.csv)
@@ -106,6 +109,9 @@ Confirm that the role is set to `SNOWFLAKE_INTELLIGENCE_ADMIN` by clicking on yo
 4. Click on `Load Data` in the top right hand corner
 5. Upload the marketing_data.csv and click `next` then load
 6. Click `View table detail` to see the new data uploaded
+
+![Updating marketing data](assets/Updatingmarketing.png)
+
 
 <!-- ------------------------ -->
 
@@ -132,6 +138,9 @@ FROM marketing_campaign_metrics m
 JOIN support_cases s ON m.category = s.product;
 ```
 Confirm the creation of the Dynamic Table by navigating to `Catalog` > `Database Explorer` > `DASH_DB_SI.RETAIL.DYNAMIC TABLES.ENRICHED_MARKETING_INTELLIGENCE`. If you do not see your table, click on the refresh button and the table should appear. 
+
+![Dynamic tbales](assets/dynamictable.png)
+
 <!-- ------------------------ -->
 
 ## Semantic Layer and Agent Creation
@@ -153,6 +162,9 @@ This tool enables the agent to query structured data in Snowflake by generating 
 4. Click `Create and Save`
 5. Scroll to the `MARKETING_CAMPAIGN_METRICS` section and click `Edit`
 6. Set `+ Primary Key` to `Category` and click `Save`
+
+![Primary key](assets/primarykey.png)
+
 7. Scroll down and click + on `Relationships`
 8. Configure the following settings:
    - **Relationship Name:** `Products`
@@ -161,6 +173,9 @@ This tool enables the agent to query structured data in Snowflake by generating 
    - **Left Column:** `PRODUCT_NAME`
    - **Right Column:** `CATEGORY`
 9. Add the relationship, then save the Analyst in the top right corner
+
+![Relationship](assets/relationship.png)
+
    
 ### Create a Cortex Search Service
 This tool allows the agent to search and retrieve information from unstructured text data, such as customer support tickets, Slack conversations, or contracts. It leverages Cortex Search to index and query these text "chunks," enabling the agent to perform Retrieval Augmented Generation (RAG).
@@ -177,6 +192,9 @@ This tool allows the agent to search and retrieve information from unstructured 
    - **Warehouse for indexing:** `DASH_DB_SI`
 5. Click `create` and click the refresh icon in the top right corner. `Serving` will update from `INITALIZING` to `ACTIVE`
 
+![Active Cortex Search](assets/servingactive.png)
+
+
 ## Create the Agent
 An agent is an intelligent entity within Snowflake Intelligence that acts on behalf of the user. Agents are configured with specific tools and orchestration logic to answer questions and perform tasks on top of your data.
 
@@ -186,10 +204,16 @@ An agent is an intelligent entity within Snowflake Intelligence that acts on beh
    - **Agent object name**: `MarketingAgent`
 3. Create the agent
 
+![Creating agent](assets/marketingagent.png)
+
+
 ### Add Instructions: 
 Configure to the following:
 - **Description**: I am a specialized Marketing & Sales Intelligence Assistant. My  primary role is to provide accurate, data-driven insights by analyzing structured marketing metrics (spend, clicks, conversions) and unstructured customer feedback (support transcripts). I bridge the gap between 'what happened' (the numbers) and 'why it happened' (customer sentiment). Always maintain a professional, analytical tone and provide clear citations for information retrieved from support transcripts.
 - **Example question**: What are the top 5 campaigns by clicks?
+
+![Instructions](assets/Instructions.png)
+
 
 ### Add Tools
 Tools are the capabilities an agent can use to accomplish a task. Think of them as the agent's skillset and note that you can add one or more of each of the following tools.
@@ -213,6 +237,9 @@ Tools are the capabilities an agent can use to accomplish a task. Think of them 
 - **ID Column:** `CAMPAIGN_NAME`
 - **Title Column:** `CLICKS`
 - **Name:** `Search`
+
+![Cortex Search Tool](assets/cortexsearchtool.png)
+
 
 **Custom tools**
 1. Click on **+Add**
@@ -250,6 +277,9 @@ Once your agent is created and enabled for **Snowflake Intelligence**, it appear
 2. You will see a list of agents you have access to
 3. Select your **MarketingAgent**
 
+![Snowflake Intelligence](assets/SI.png)
+
+
 ### The Conversational Interface
 
 The UI is designed to handle natural language queries. It doesn't just return data; it provides a narrative response.
@@ -262,13 +292,19 @@ Let's ask the following questions
 
 ### Q1. What are the top 5 campaigns by clicks?
 
+![Top 5](assets/top5clicks.png)
+
 ### Q2. Show me all campaign performance metrics and it's relationship to the product
+
+![Metrics](assets/metricsproduct.png)
 
 ### Q3. What is the relationship between campaign clicks and customer satisfaction by category?
 
+![Click Satisfaction](assets/clicksatisficiation.png)
+
 ### Q4. What are the main customer complains in support cases?
 
-
+![Support cases](assets/supportcases.png)
 
 
 ## Security (optional)
