@@ -98,14 +98,14 @@ SELECT
     SNOWFLAKE.CORTEX.AI_CLASSIFY(transcript, ['Return', 'Quality', 'Shipping']) AS issue_category
 FROM support_cases;
 ```
-### Replacing Marketing Data
-Confirm that the role is set to 'SNOWFLAKE_INTELLIGENCE_ADMIN' by clicking on your profile in the bottom left corner.
-1. Download the [marketing_data.csv](https://github.com/Snowflake-Lab/sfquickstarts/blob/master/site/sfguides/src/from-zero-to-agents/assets/marketing_data.csv)
-2. Navigate to Catalog > Database Explorer
-3. Open DASH_DB_SI.RETAIL.Tables.MARKETING_CAMPAIGN_METRICS. If you do not see the database, refresh the data.
-4. Click on 'Load Data' in the top right hand corner
-5. Upload the marketing_data.csv and click 'next' then load
-6. Click 'View table detail' to see the new data uploaded
+### Updating Marketing Data
+Confirm that the role is set to `SNOWFLAKE_INTELLIGENCE_ADMIN` by clicking on your profile in the bottom left corner.
+1. Download the [marketing_data.csv](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/from-zero-to-agents/assets/marketing_data.csv)
+2. Navigate to `Catalog` > `Database Explorer`
+3. Open `DASH_DB_SI.RETAIL.Tables.MARKETING_CAMPAIGN_METRICS`. If you do not see the database, refresh the data.
+4. Click on `Load Data` in the top right hand corner
+5. Upload the marketing_data.csv and click `next` then load
+6. Click `View table detail` to see the new data uploaded
 
 <!-- ------------------------ -->
 
@@ -142,7 +142,7 @@ Provide the agent with a "map" to understand your business logic through a **Sem
 This tool enables the agent to query structured data in Snowflake by generating SQL. It relies on semantic views, which are mappings between business concepts (e.g., "product name," "sales") and the underlying tables and columns in your Snowflake account. This abstraction helps the LLM understand how to query your data effectively, even if your tables have complex or arbitrary naming conventions.
 
 1. Navigate to **AI & ML > Analyst** in Snowsight
-2. Confrim the role is set to `SNOWFLAKE_INTELLIGENCE_ADMIN` and warehouse to `DASH_WH_SI`. Then click 'Create new' > 'Create new Semantic View'
+2. Confrim the role is set to `SNOWFLAKE_INTELLIGENCE_ADMIN` and warehouse to `DASH_WH_SI`. Then click `Create new` > `Create new Semantic View`
 3. Configure the following settings:
    - **Role:** `SNOWFLAKE_INTELLIGENCE_ADMIN`
    - **Warehouse:** `DASH_WH_SI`
@@ -150,10 +150,10 @@ This tool enables the agent to query structured data in Snowflake by generating 
    - **Name:** `SEMANTIC_VIEW`
    - **Select tables:** Select all tables `DASH_DB_SI.Retail`, should be 5 tables and 1 dynamic table
    - **Select Columns:** Select all columns
-4. Click 'Create and Save'
-5. Scroll to the 'MARKETING_CAMPAIGN_METRICS' section and click Edit
-6. Set + Primary Key to Category and click Save
-7. Scroll down and click + on 'Relationships'
+4. Click `Create and Save`
+5. Scroll to the `MARKETING_CAMPAIGN_METRICS` section and click `Edit`
+6. Set `+ Primary Key` to `Category` and click `Save`
+7. Scroll down and click + on `Relationships`
 8. Configure the following settings:
    - **Relationship Name:** `Products`
    - **Left Table:** `ENRICHED_MARKETING_INTELLIGENCE`
@@ -175,7 +175,7 @@ This tool allows the agent to search and retrieve information from unstructured 
    - **Select search column:** `campaign name`
    - **Select attribute columns:** `Select all`
    - **Warehouse for indexing:** `DASH_DB_SI`
-5. Click `create` and click the refresh icon in the top right corner. `Serving` will update from `INITALIZING` to `ACTIVE'
+5. Click `create` and click the refresh icon in the top right corner. `Serving` will update from `INITALIZING` to `ACTIVE`
 
 ## Create the Agent
 An agent is an intelligent entity within Snowflake Intelligence that acts on behalf of the user. Agents are configured with specific tools and orchestration logic to answer questions and perform tasks on top of your data.
@@ -183,7 +183,7 @@ An agent is an intelligent entity within Snowflake Intelligence that acts on beh
 1. Navigate to **AI & ML > Agents** in Snowsight
 2. On the top right, click on **Create agent**
    - **Database and schema**: `DASH_DB_SI.Retail`
-   - **Agent object name**: 'MarketingAgent'
+   - **Agent object name**: `MarketingAgent`
 3. Create the agent
 
 ### Add Instructions: 
@@ -199,10 +199,10 @@ Tools are the capabilities an agent can use to accomplish a task. Think of them 
 2. Configure the following settings:
 - **Service database & schema:** `DASH_DB_SI.Retail`
 - **Agent Name:** `MarketingAgent`
-- **Select semantic view:** 'SEMANTIC_VIEW'
-- **Name:** 'semantic_view'
-- **Description:** Click on 'Generate with Cortex'
-- **Warehouse:** Custom > 'DASH_WH_SI'
+- **Select semantic view:** `SEMANTIC_VIEW`
+- **Name:** `semantic_view`
+- **Description:** Click on `Generate with Cortex`
+- **Warehouse:** `Custom` > `DASH_WH_SI`
 - **Query timeout:** 60
 
 **Cortex Search Services**
@@ -210,10 +210,10 @@ Tools are the capabilities an agent can use to accomplish a task. Think of them 
 2. Configure the following settings:
 - **Service database & schema:** `DASH_DB_SI.Retail`
 - **Cortex Search Services:** `DASH_DB_SI.RETAIL.CAMPAIGN_SEARCH`
-- **Max Results:** '4'
-- **ID Column:** 'CAMPAIGN_NAME'
-- **Title Column:** 'CLICKS'
-- **Name:** 'Search'
+- **Max Results:** `4`
+- **ID Column:** `CAMPAIGN_NAME`
+- **Title Column:** `CLICKS`
+- **Name:** `Search`
 
 **Custom tools**
 1. Click on **+Add**
@@ -221,8 +221,8 @@ Tools are the capabilities an agent can use to accomplish a task. Think of them 
 - **Resource type:** `procedure`
 - **Service database & schema:** `DASH_DB_SI.Retail`
 - **Custom tool identifier:** `DASH_DB_SI.RETAIL.SEND_EMAIL()`
-- **Name:** 'Send_Email'
-- **Warehouse:** Custom > 'DASH_WH_SI'
+- **Name:** `Send_Email`
+- **Warehouse:** `Custom` > `DASH_WH_SI`
 - **Query timeout:** 60
 - **Paramter: body**
   - Description: Use HTML-Syntax for this. If the content you get is in markdown, translate it to HTML. If body is not provided, summarize the last question and use that as content for the email.
@@ -233,9 +233,9 @@ Tools are the capabilities an agent can use to accomplish a task. Think of them 
  
 **Orchestration Instructions:** Whenever you can answer visually with a chart, always choose to generate a chart even if the user didn't specify to.
 
-**Access:** SNOWFLAKE_INTELLIGENCE_ADMIN
+**Access:** `SNOWFLAKE_INTELLIGENCE_ADMIN`
 
-**Click 'Save' in the top right corner**
+**Click `Save` in the top right corner**
 
 <!-- ------------------------ -->
 
