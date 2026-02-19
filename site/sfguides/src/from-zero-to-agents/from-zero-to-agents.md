@@ -97,6 +97,11 @@ SELECT
     SNOWFLAKE.CORTEX.AI_CLASSIFY(transcript, ['Return', 'Quality', 'Shipping']) AS issue_category
 FROM support_cases;
 ```
+### Replacing Marketing Data
+1. Navigate to Catalog > Database Explorer
+2. Open DASH_DB_SI.RETAIL.Tables.MARKETING_CAMPAIGN_METRICS
+3. Click on 'Load Data' in the top right hand corner
+4. Download the 
 
 <!-- ------------------------ -->
 
