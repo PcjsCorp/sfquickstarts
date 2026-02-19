@@ -98,10 +98,11 @@ SELECT
 FROM support_cases;
 ```
 ### Replacing Marketing Data
-1. Navigate to Catalog > Database Explorer
-2. Open DASH_DB_SI.RETAIL.Tables.MARKETING_CAMPAIGN_METRICS
-3. Click on 'Load Data' in the top right hand corner
-4. Download the 
+1. Download the [marketing_data.csv](https://github.com/Snowflake-Lab/sfquickstarts/blob/master/site/sfguides/src/from-zero-to-agents/assets/marketing_data.csv)
+2. Navigate to Catalog > Database Explorer
+3. Open DASH_DB_SI.RETAIL.Tables.MARKETING_CAMPAIGN_METRICS
+4. Click on 'Load Data' in the top right hand corner
+5. Upload the marketing_data.csv and click 'next' then load
 
 <!-- ------------------------ -->
 
@@ -119,11 +120,11 @@ Create a Dynamic Table that automatically joins campaign metrics with AI-generat
 
 ```sql
 CREATE OR REPLACE DYNAMIC TABLE enriched_marketing_intelligence
-TARGET_LAG = '1 minute'
+TARGET_LAG = '1 hours'
 WAREHOUSE = dash_wh_si
 AS
-SELECT m.campaign_name, m.clicks, 
-       SNOWFLAKE.CORTEX.AI_SENTIMENT(s.transcript) AS avg_sentiment
+SELECT m.campaign_name, m.clicks, s.product AS product_name,
+       SNOWFLAKE.CORTEX.SENTIMENT(s.transcript) AS avg_sentiment
 FROM marketing_campaign_metrics m
 JOIN support_cases s ON m.category = s.product;
 ```
@@ -144,9 +145,19 @@ Map technical columns to natural business terms like **"Ad Campaign"** and **"Cu
    - **Warehouse:** `DASH_WH_SI`
    - **Location to store:** `DASH_DB_SI.Retail`
    - **Name:** `SEMANTIC_VIEW`
-   - **Select tables:** `DASH_DB_SI.Retail`
-   - **Select Columns:** Marketing Metrics
-
+   - **Select tables:** Select all tables `DASH_DB_SI.Retail`, should be 5 tables and 1 dynamic table
+   - **Select Columns:** Select all columns
+3. Click 'Create and Save'
+4. Scroll to the 'MARKETING_CAMPAIGN_METRICS' section and click Edit
+5. Set + Primary Key to Category and click Save
+6. Scroll down and click + on 'Relationships'
+7. Configure the following settings:
+   - **Relationship Name:** `Products`
+   - **Left Table:** `ENRICHED_MARKETING_INTELLIGENCE`
+   - **Right Table:** `MARKETING_CAMPAIGN_METRICS`
+   - **Left Column:** `PRODUCT_NAME`
+   - **Right Column:** `CATEGORY`
+8. Add the relationship, then save the Analyst in the top right corner 
 ### Create a Cortex Search Service
 
 1. Navigate to **AI & ML > Search** in Snowsight
@@ -162,14 +173,17 @@ Map technical columns to natural business terms like **"Ad Campaign"** and **"Cu
 ### Create the Agent
 
 1. Navigate to **AI & ML > Agents** in Snowsight
-2. Add the **Analyst Tool** (using your Semantic View) and the **Search Tool** (for transcript retrieval)
-3. Configure the agent:
-   - **Agent Name:** `agent`
+2. On the top right, click on **Create agent**
+   - **Database and schema**: `DASH_DB_SI.Retail`
+   - **Agent object name**: 'MarketingAgent'
+4. Add the **Analyst Tool** (using your Semantic View) and the **Search Tool** (for transcript retrieval)
+5. Configure the agent:
+   - **Agent Name:** `MarketingAgent`
    - **Agent Description:** 
    
    > I am a specialized Marketing & Sales Intelligence Assistant. My primary role is to provide accurate, data-driven insights by analyzing structured marketing metrics (spend, clicks, conversions) and unstructured customer feedback (support transcripts). I bridge the gap between 'what happened' (the numbers) and 'why it happened' (customer sentiment). Always maintain a professional, analytical tone and provide clear citations for information retrieved from support transcripts.
 
-4. **Agent Tools:** Add Cortex Analyst & Cortex Search
+6. **Agent Tools:** Add Cortex Analyst & Cortex Search
 
 <!-- ------------------------ -->
 
