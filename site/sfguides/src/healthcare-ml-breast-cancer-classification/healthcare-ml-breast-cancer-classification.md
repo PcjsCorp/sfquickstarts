@@ -6,7 +6,7 @@ categories: snowflake-site:taxonomy/product/ai, snowflake-site:taxonomy/product/
 environments: web
 status: Published
 feedback link: https://github.com/Snowflake-Labs/sfguides/issues
-fork repo link: https://github.com/sfquickstarts/tree/master/site/sfguides/src/healthcare-ml-breast-cancer-classification
+fork repo link: https://github.com/Snowflake-Labs/sfquickstarts/tree/master/site/sfguides/src/healthcare-ml-breast-cancer-classification
 
 
 # Healthcare ML: Breast Cancer Classification with XGBoost
@@ -71,7 +71,7 @@ Part 1 does not require any setup script. You only need to create a service and 
 
 Download the first notebook to your local machine:
 
-1. Click this link: [0_start_here.ipynb](https://github.com/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/notebooks/0_start_here.ipynb)
+1. Click this link: [0_start_here.ipynb](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/notebooks/0_start_here.ipynb)
 2. On the GitHub page, click the **Download raw file** button (download icon in the top right)
 3. Save the `.ipynb` file to your computer
 
@@ -292,6 +292,8 @@ Part 2 deploys the trained model to Snowflake Model Registry. This requires runn
 
 ### Run the Setup Script
 
+Download the [setup.sql](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/scripts/setup.sql) script and run it as **ACCOUNTADMIN** in a new SQL file in **Projects** > **Workspaces**, or copy and paste the script below.
+
 1. Open Snowflake and navigate to **Projects** > **Workspaces**
 2. Click **Add new** > **Upload Files** to upload the notebook
 
@@ -371,7 +373,7 @@ This will create:
 
 Download the second notebook to your local machine:
 
-1. Click this link: [1_snowflake_deployment.ipynb](https://github.com/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/notebooks/1_snowflake_deployment.ipynb)
+1. Click this link: [1_snowflake_deployment.ipynb](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/notebooks/1_snowflake_deployment.ipynb)
 2. On the GitHub page, click the **Download raw file** button
 3. Save the `.ipynb` file to your computer
 
@@ -463,7 +465,7 @@ When you're finished with the guide, remove all created resources to avoid incur
 
 ### Run the Teardown Script
 
-Run the [teardown.sql](https://github.com/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/scripts/teardown.sql) script as **ACCOUNTADMIN** in a new SQL file in **Projects** > **Workspaces**.
+Run the [teardown.sql](https://github.com/Snowflake-Labs/sfquickstarts/blob/master/site/sfguides/src/healthcare-ml-breast-cancer-classification/scripts/teardown.sql) script as **ACCOUNTADMIN** in a new SQL file in **Projects** > **Workspaces**.
 
 > NOTE:
 > This will permanently delete all data and resources created during the guide, including any models registered in the Snowflake Model Registry under the `HEALTHCARE_ML` database.
@@ -490,7 +492,7 @@ Congratulations! You've built a complete end-to-end ML workflow for breast cance
 
 ### Related Resources
 
-- [GitHub Repository — Complete Code and Notebooks](https://github.com/sfquickstarts/tree/master/site/sfguides/src/healthcare-ml-breast-cancer-classification)
+- [GitHub Repository — Complete Code and Notebooks](https://github.com/Snowflake-Labs/sfquickstarts/tree/master/site/sfguides/src/healthcare-ml-breast-cancer-classification)
 - [Snowflake Notebooks in Workspaces](https://docs.snowflake.com/en/user-guide/ui-snowsight/notebooks-in-workspaces/notebooks-in-workspaces-overview)
 - [Snowflake Model Registry Documentation](https://docs.snowflake.com/en/developer-guide/snowflake-ml/model-registry/overview)
 - [Snowflake ML for Python](https://docs.snowflake.com/en/developer-guide/snowpark-ml/index)
